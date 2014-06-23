@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="food-logistics:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="AngularSpringApp.war">
-      <element id="artifact" artifact-name="food-logistics:war exploded" />
-    </root>
-  </artifact>
-</component>
