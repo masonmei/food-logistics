@@ -1,0 +1,93 @@
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" role="form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">New Train</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="alert alert-danger" ng-show="error">
+                            {{errorMessage}}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="inputEmail">Train Name</label>
+
+                        <div class="col-md-9">
+                            <input class="form-control" type="text" id="inputEmail" ng-model="train.name"
+                                   placeholder="Train Name" required min="2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="inputSpeed">Speed</label>
+
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="inputSpeed" ng-model="train.speed"
+                                       placeholder="Speed" required min="1" step="1">
+                                <span class="input-group-addon">KM/H</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-3 col-md-9">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="train.diesel"> Is Diesel
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" ng-click="resetTrainForm()" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="!train.name || !train.speed"
+                            ng-hide="editMode" ng-click="addNewTrain(train)">Add Train
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-disabled="!train.name || !train.speed"
+                            ng-show="editMode" ng-click="updateTrain(train)">Save Train
+                    </button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<h3>Trains List<span class="small"><button class="btn btn-link btn-xs" data-toggle="modal" data-target="#myModal">
+    <i class="glyphicon glyphicon-plus"></i>
+</button></span></h3>
+<div class="alert alert-info" ng-show="trains.length == 0">
+    No trains found
+</div>
+<table class="table table-bordered table-responsive" ng-show="trains.length > 0">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Speed</th>
+        <th>Diesel</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="train in trains | orderBy:predicate">
+        <td style="text-align: center;">{{train.id}}</td>
+        <td>{{train.name}}</td>
+        <td>{{train.speed}}</td>
+        <td><span ng-show="train.diesel" class="icon-ok"></span></td>
+        <td>
+            <button class="btn btn-xs btn-danger" ng-click="removeTrain(train.id)"><i
+                    class="glyphicon glyphicon-remove"></i></button>
+            <button class="btn btn-xs btn-success" ng-click="editTrain(train)"><i class="glyphicon glyphicon-edit"></i>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<button class="btn btn-danger" ng-show="trains.length > 1" ng-click="removeAllTrains()">Remove All Trains</button>
