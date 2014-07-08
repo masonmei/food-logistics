@@ -21,7 +21,7 @@
     </logger>
 
     <logger name="org.personal.mason.fl">
-        <level value="debug"/>
+        <level value="info"/>
     </logger>
 
     <logger name="org.springframework.web">

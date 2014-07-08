@@ -1,0 +1,136 @@
+<div class="">
+
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="btn-group btn-group-sm">
+            <a ng-click="findOrderOrdered()" class="btn btn-primary">需要通知商家的订单</a>
+            <a ng-click="findOrderNotified()" class="btn btn-primary">需要安排骑士的订单</a>
+            <a ng-click="findOrderDelivered()" class="btn btn-primary">骑士未取的订单</a>
+            <a ng-click="findOrderOnTheWay()" class="btn btn-primary">正在配送的订单</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <accordion close-others="true">
+            <accordion-group ng-repeat="order in results">
+                <accordion-heading class="success">
+                    订单号:{{order.order_number}}<span class="small"> [ 订单状态: {{order.order_status}} ]</span>
+                    <form class="form-inline pull-right" ng-show="type == 'NOTIFIED'">
+                        <div class="input-group input-group-sm">
+                            <select class="form-control small"
+                                    ng-model="cavalier"
+                                    ng-options="c as c.email for c in cavaliers">
+                                <option value="">-- 请选择 --</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-xs" type="button" ng-click="confirmAssign(order.id)">确认指派</button>
+                            </span>
+                        </div>
+                    </form>
+                </accordion-heading>
+                <div class="well well-sm" ng-if="type == 'ORDERED'">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group form-group-sm">
+                            <label class="control-label col-lg-2 col-md-2">附加信息</label>
+                            <div class="col-lg-10 col-md-10">
+                                <textarea ng-model="order.addition_info" class="form-control" rows=3>
+
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <div class="col-lg-10 col-md-10 col-lg-offset-2 col-md-offset-2">
+                                <input type="submit" class="btn btn-primary btn-sm" ng-click="sendToMerchant(order.id)" value="确认发送">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="well well-sm">
+                    <div class="col-lg-2 col-md-2 control-label">
+                        配置费
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        {{order.delivery_fee}}
+                    </div>
+                    <div class="col-lg-2 col-md-2 control-label">
+                        商家名称
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        {{order.merchant.name}}
+                    </div>
+                    <div class="col-lg-2 col-md-2 control-label">
+                        订单价格
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        {{order.total_price}}
+                    </div>
+                    <div class="col-lg-2 col-md-2 control-label">
+                        下单时间
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        {{order.submit_time}}
+                    </div>
+                    <div class="col-lg-2 col-md-2 control-label">
+                        收货地址
+                    </div>
+                    <div class="col-lg-10 col-md-10">
+                        {{order.contact.address}}
+                    </div>
+                    <div class="col-lg-2 col-md-2 control-label">
+                        附加信息
+                    </div>
+                    <div class="col-lg-10 col-md-10">
+                        {{order.addition_info}}
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-responsive table-bordered small">
+                        <thead>
+                        <tr>
+                            <td>菜品</td>
+                            <td>数量</td>
+                            <td>价格</td>
+                            <td>小计</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in order.purchase_items">
+                            <td>{{item.product.name}}</td>
+                            <td>{{item.number}}</td>
+                            <td>{{item.product.price}}</td>
+                            <td>{{item.number * item.product.price}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </accordion-group>
+        </accordion>
+
+
+        <div ng-repeat="order in results" class="panel panel-success">
+            <div class="panel-heading">
+                <h4 class="panel-title">订单号:{{order.order_number}}<span class="small"> [ 订单状态: {{order.order_status}} ]</span>
+                    <form class="form-inline pull-right" ng-show="type == 'NOTIFIED'">
+                        <div class="input-group input-group-sm">
+                            <select class="form-control small"
+                                    ng-model="c"
+                                    ng-options="c.email for c in cavaliers">
+                                <option value="">-- 请选择 --</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-xs" type="button">确认指派</button>
+                            </span>
+                        </div>
+                    </form>
+                </h4>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+

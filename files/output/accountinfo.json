@@ -1,0 +1,30 @@
+{"id": 6, "email": "mhs_mcson@163.com", "password": "e64445347a4fcd60cf9a84bbce7c21a5e5b277352c95e398e3394a0299cd23a3d97e8d5369ae4ac8", "user_number": "U000000004", "profile": {
+    "id": 2,
+    "vip": false
+}, "roles": [
+    {
+        "id": 1,
+        "name": "USER",
+        "enable": true
+    },
+    {
+        "id": 4,
+        "name": "ADMIN",
+        "enable": true
+    },
+    {
+        "id": 3,
+        "name": "MERCHANT",
+        "enable": true
+    },
+    {
+        "id": 2,
+        "name": "CAVALIER",
+        "enable": true
+    }
+], "groups": [
+    {
+        "id": 1,
+        "name": "Unknown"
+    }
+]}

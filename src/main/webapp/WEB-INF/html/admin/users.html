@@ -1,0 +1,140 @@
+<div class="well well-sm" ng-if="createOrUpdate">
+    <form class="form-horizontal" role="form">
+        <fieldset>
+            <legend>添加用户</legend>
+
+            <div class="form-group">
+                <div class="alert alert-danger" ng-show="error">{{errorMessage}}</div>
+            </div>
+
+            <div class="form-group">
+                <div class=" col-md-9 col-md-offset-3">
+                    <input class="form-control" type="hidden" ng-model="user.id" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">名称</label>
+
+                <div class=" col-md-9">
+                    <input class="form-control" type="text" ng-model="user.email" placeholder="名称"
+                           required min="2">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-9">
+                    <button type="button" class="btn btn-primary"
+                            ng-disabled="!group.name || !group.role" ng-hide="edit"
+                            ng-click="create(group)">添加
+                    </button>
+                    <button type="button" class="btn" ng-click="reset()">取消</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div><!-- /.modal -->
+
+<div class="well well-sm" ng-if="roleAdd">
+    <form class="form-horizontal" role="form">
+        <fieldset>
+            <legend>添加角色</legend>
+            <div class="form-group">
+                <label class="control-label  col-md-3">角色</label>
+                <input type="hidden" ng-model="group_id">
+                <div class="col-md-9">
+                    <select class="form-control"
+                            ng-model="group_role_id"
+                            ng-options="role.id as role.name group by role.type for role in roles"
+                            >
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-9">
+                    <button type="button" class="btn btn-primary"
+                            ng-disabled="!user_id || !user_role_id"
+                            ng-click="addRoleToUser(user_id, user_role_id)">添加
+                    </button>
+                    <button type="button" class="btn" ng-click="reset()">取消</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div class="well well-sm" ng-if="groupAdd">
+    <form class="form-horizontal" role="form">
+        <fieldset>
+            <legend>添加组</legend>
+            <div class="form-group">
+                <label class="control-label  col-md-3">角色</label>
+                <input type="hidden" ng-model="user_id">
+                <div class="col-md-9">
+                    <select class="form-control"
+                            ng-model="user_group_id"
+                            ng-options="group.id as group.name for group in groups"
+                            >
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-9">
+                    <button type="button" class="btn btn-primary"
+                            ng-disabled="!user_id || !user_group_id"
+                            ng-click="addUserToGroup(user_id, user_group_id)">添加
+                    </button>
+                    <button type="button" class="btn" ng-click="reset()">取消</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+<div ng-hide="createOrUpdate">
+    <span class="small pull-right"><button class="btn btn-link btn-xs" ng-click="addUser()">
+        <i class="glyphicon glyphicon-plus-sign"></i> 添加用户</button></span>
+
+
+    <div class="alert alert-info" ng-show="users.length == 0">No User found</div>
+    <table class="table table-bordered table-striped" ng-show="users.length > 0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <td>用户编号</td>
+                <th>Role</th>
+                <th>Group</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in users | orderBy:predicate">
+            <td>{{item.id}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.user_number}}</td>
+            <td>
+                <span class="label label-info" ng-repeat="role in item.roles">
+                    {{role.name}} <a href="" class="glyphicon glyphicon-remove" ng-click="removeRoleFromUser(item.id, role.id)"></a>
+                </span>
+            </td>
+            <td>
+                <span class="label label-info" ng-repeat="group in item.groups">
+                    {{group.name}} <a href="" class="glyphicon glyphicon-remove" ng-click="removeUserFromGroup(item.id, group.id)"></a>
+                </span>
+            </td>
+            <td>
+                <button class="btn btn-xs btn-danger"
+                        ng-click="remove(item.id)"><i class="glyphicon glyphicon-remove"></i>
+                </button>
+                <span class="small pull-right"><button class="btn btn-link btn-xs" ng-click="addGroup(item.id)">
+                    <i class="glyphicon glyphicon-plus-sign"></i> 添加用户组</button></span>
+                <span class="small pull-right"><button class="btn btn-link btn-xs" ng-click="addRole(item.id)">
+                    <i class="glyphicon glyphicon-plus-sign"></i> 添加角色</button></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -18,12 +18,13 @@
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
           p:generateDdl="${jpa.ddl.generate}"
           p:showSql="${jpa.sql.show}"
-          p:database="MYSQL"/>
+          p:database="${database.name}"
+          p:databasePlatform="${jpa.dialect}"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:dataSource-ref="dataSource"
           p:jpaVendorAdapter-ref="jpaVendorAdapter"
-          p:persistenceUnitName="fl"
+          p:persistenceUnitName="${persistent.unit.name}"
           p:packagesToScan="${packages.to.scan}"/>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"

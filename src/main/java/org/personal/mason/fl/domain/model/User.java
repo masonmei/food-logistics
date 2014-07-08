@@ -3,7 +3,6 @@ package org.personal.mason.fl.domain.model;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,13 +12,9 @@ import java.util.Set;
  * The persistent class for the user database table.
  */
 @Entity
-@Table(name = "user")
-@NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
+@Table(name = "fl_user")
 public class User extends AbstractAuditable<User, Long> implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Column(name = "display_name", length = 48)
-    private String displayName;
 
     @Column(length = 100, unique = true)
     private String email;
@@ -27,39 +22,42 @@ public class User extends AbstractAuditable<User, Long> implements Serializable 
     @Column(nullable = false, length = 128)
     private String password;
 
-    @Column(length = 30)
-    private String phone;
-
-    @Column(name = "user_number", nullable = false, length = 10)
+    @Column(name = "user_number", nullable = false, length = 21)
     private String userNumber;
 
-    @Column(name = "vip")
-    private Boolean vip;
+    @Column(name="enable")
+    private Boolean enable = Boolean.TRUE;
 
-    @ManyToOne
-    @JoinColumn(name = "user_group_id")
-    private UserGroup userGroup;
+    @ManyToMany()
+    @JoinTable(name = "fl_user_role", joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "user_role_id", nullable = false)
-    private UserRole userRole;
+    @ManyToMany(mappedBy = "users")
+    private Set<Group> groups = new HashSet<>();
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="profile_id")
+    private Profile profile;
+
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="shopping_car_id")
+    private ShoppingCar shoppingCar;
 
     @OneToMany(mappedBy = "user")
-    private Set<UserContact> userContacts = new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
+
+    @OneToMany(mappedBy = "cavalier")
+    private Set<Order> cavalierOrder = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<PersistentToken> persistentTokens = new HashSet<>();
 
     public User() {
     }
 
     public User(Long id) {
         setId(id);
-    }
-
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public String getEmail() {
@@ -78,14 +76,6 @@ public class User extends AbstractAuditable<User, Long> implements Serializable 
         this.password = password;
     }
 
-    public String getPhone() {
-        return this.phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getUserNumber() {
         return this.userNumber;
     }
@@ -94,56 +84,126 @@ public class User extends AbstractAuditable<User, Long> implements Serializable 
         this.userNumber = userNumber;
     }
 
-    public Boolean getVip() {
-        return this.vip;
+    public Boolean getEnable() {
+        return enable;
     }
 
-    public void setVip(Boolean vip) {
-        this.vip = vip;
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 
-
-    //bi-directional many-to-one association to UserGroup
-    public UserGroup getUserGroup() {
-        return this.userGroup;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
-
-    //bi-directional many-to-one association to UserRole
-    public UserRole getUserRole() {
-        return this.userRole;
+    public Role addRole(Role role){
+        if(role == null){
+            return null;
+        }
+        getRoles().add(role);
+        role.getUsers().add(this);
+        return role;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+    public Role removeRole(Role role){
+        if(role == null){
+            return null;
+        }
+        getRoles().remove(role);
+        role.getUsers().remove(this);
+
+        return role;
     }
 
-
-    //bi-directional many-to-one association to UserContact
-    public Set<UserContact> getUserContacts() {
-        return this.userContacts;
+    public Set<Group> getGroups() {
+        return groups;
     }
 
-    public void setUserContacts(Set<UserContact> userContacts) {
-        this.userContacts = userContacts;
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 
-    public UserContact addUserContact(UserContact userContact) {
-        getUserContacts().add(userContact);
-        userContact.setUser(this);
+    public Group addGroup(Group group){
+        if(group == null){
+            return null;
+        }
+        getGroups().add(group);
+        group.getUsers().add(this);
 
-        return userContact;
+        return group;
     }
 
-    public UserContact removeUserContact(UserContact userContact) {
-        getUserContacts().remove(userContact);
-        userContact.setUser(null);
+    public Group removeGroup(Group group){
+        if(group == null){
+            return null;
+        }
 
-        return userContact;
+        getGroups().remove(group);
+        group.getUsers().remove(this);
+
+        return group;
     }
 
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public ShoppingCar getShoppingCar() {
+        return shoppingCar;
+    }
+
+    public void setShoppingCar(ShoppingCar shoppingCar) {
+        this.shoppingCar = shoppingCar;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Set<Order> getCavalierOrder() {
+        return cavalierOrder;
+    }
+
+    public void setCavalierOrder(Set<Order> cavalierOrder) {
+        this.cavalierOrder = cavalierOrder;
+    }
+
+    public Order addCavalierOrder(Order order){
+        if(order == null){
+            return null;
+        }
+        getCavalierOrder().add(order);
+        order.setCavalier(this);
+        return order;
+    }
+
+    public Order removeCavalierOrder(Order order){
+        if(order == null){
+            return null;
+        }
+
+        getCavalierOrder().remove(order);
+        order.setCavalier(null);
+        return order;
+    }
+
+    public Set<PersistentToken> getPersistentTokens() {
+        return persistentTokens;
+    }
+
+    public void setPersistentTokens(Set<PersistentToken> persistentTokens) {
+        this.persistentTokens = persistentTokens;
+    }
 }
