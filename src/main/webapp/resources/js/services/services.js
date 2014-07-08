@@ -181,6 +181,9 @@ AngularSpringApp.factory('UserService', ['$http', function($http){
         findAll: function(){
             return $http.get('/user');
         },
+        queryUser: function(query){
+            return $http.get('/user/search?query=' + query);
+        },
         findById: function(id){
             return $http.get('/user/' + id);
         },

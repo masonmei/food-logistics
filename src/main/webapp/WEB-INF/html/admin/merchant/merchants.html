@@ -69,6 +69,10 @@
     <div>
         <h4>商家列表<span class="small pull-right"><a ng-click="addMerchant()" class="btn btn-link btn-xs"><i class="glyphicon glyphicon-plus-sign"></i>添加</a></span></h4>
 
+        <alert type="warning" ng-show="merchants.length == 0">
+            没有评论！
+        </alert>
+
         <div ng-repeat="item in merchants | orderBy:predicate" class="clearfix well" >
             <div class="col-lg-2 col-md-2">
                 <img src="{{item.logo}}" alt="{{item.name}}" class="img-cell-sm">

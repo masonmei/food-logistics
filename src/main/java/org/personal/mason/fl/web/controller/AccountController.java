@@ -243,7 +243,7 @@ public class AccountController extends AbstractController {
         Profile profile = getCurrentProfile();
         Contact contact = ContactConverter.toModel(poContact);
         profile.addContact(contact);
-
+        contactRepository.saveAndFlush(contact);
         profile = profileRepository.saveAndFlush(profile);
 
         HttpHeaders headers = new HttpHeaders();

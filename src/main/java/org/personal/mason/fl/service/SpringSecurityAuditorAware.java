@@ -10,10 +10,12 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by mason on 6/30/14.
  */
+@Component
 public class SpringSecurityAuditorAware implements AuditorAware<User>, ApplicationListener<ContextRefreshedEvent> {
 
     private Logger logger = LoggerFactory.getLogger(SpringSecurityAuditorAware.class);

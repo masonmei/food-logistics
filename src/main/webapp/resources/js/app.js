@@ -147,7 +147,7 @@ AngularSpringApp.config(['$locationProvider', '$routeProvider', '$httpProvider',
                 }
             })
             .when('/admin/cavaliers', {
-                templateUrl: '/view?vn=admin/cavaliers',
+                templateUrl: '/view?vn=admin/cavalier/cavaliers',
                 controller: 'ACavalierController',
                 access: {
                     authorizedRoles: [USER_ROLES.admin]

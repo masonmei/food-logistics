@@ -47,6 +47,10 @@
         <span class="small pull-right"><a ng-click="addProduct()" class="btn btn-link btn-xs"><i class="glyphicon glyphicon-plus-sign"></i>添加</a></span>
     </div>
     <div class="panel-body">
+        <alert type="warning" ng-show="products.length == 0">
+            没有评论！
+        </alert>
+
         <div class="prod-item" ng-repeat="item in products | orderBy:predicate">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-if="isAuthorized('MERCHANT','ADMIN')" ng-click="removeProduct(item.id)">&times;</button>
 

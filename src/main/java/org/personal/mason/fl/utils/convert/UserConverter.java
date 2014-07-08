@@ -78,7 +78,7 @@ public class UserConverter {
         }
         if(convertType.getPriority() >= ConvertType.FULL.getPriority()){
             model.setProfile(
-                    ProfileConverter.toModel(poUser.getPoProfile(), ConvertType.KEY_ONLY)
+                    ProfileConverter.toModel(poUser.getPoProfile(), ConvertType.FLAT)
             );
             model.setGroups(
                     new HashSet<>(GroupConverter.toModel(poUser.getPoGroups(), ConvertType.FLAT))

@@ -32,6 +32,11 @@ public class MerchantConverter {
                 poMerchant.setDeliveryFee(model.getDeliveryFee());
                 poMerchant.setDeliveryTime(model.getDeliveryTime());
             }
+            if(convertType.getPriority() >= ConvertType.FULL.getPriority()){
+                poMerchant.setPoUser(
+                        UserConverter.fromModel(model.getUser())
+                );
+            }
         }
 
         return poMerchant;
@@ -73,6 +78,11 @@ public class MerchantConverter {
                 model.setConsume(poMerchant.getConsume());
                 model.setDeliveryFee(poMerchant.getDeliveryFee());
                 model.setDeliveryTime(poMerchant.getDeliveryTime());
+            }
+            if(convertType.getPriority() >= ConvertType.FULL.getPriority()){
+                model.setUser(
+                        UserConverter.toModel(poMerchant.getPoUser())
+                );
             }
         }
 

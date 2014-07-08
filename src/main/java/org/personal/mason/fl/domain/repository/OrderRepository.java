@@ -4,6 +4,8 @@ import org.personal.mason.fl.domain.model.Merchant;
 import org.personal.mason.fl.domain.model.Order;
 import org.personal.mason.fl.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.Date;
@@ -54,4 +56,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByStatusInAndMerchantAndSubmitTimeBetween(Collection<String> status, Merchant merchant, Date from, Date to);
 
     List<Order> findByCavalierIsNull();
+
+    @Query("select count(o) from Order o where o.cavalier = :cavalier and o.status = :status")
+    long countByCavalierAndStatus(@Param("cavalier") User cavalier, @Param("status") String status);
 }

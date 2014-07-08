@@ -41,6 +41,10 @@
         </div>
     </div>
     <div class="panel-body">
+        <alert type="warning" ng-show="results.length == 0">
+            没有订单！
+        </alert>
+
         <div ng-repeat="order in results" class="panel panel-success">
             <div class="panel-heading">
                 <h4 class="panel-title">订单号:{{order.order_number}}<span class="small pull-right">订单状态: {{order.order_status}}</span></h4>

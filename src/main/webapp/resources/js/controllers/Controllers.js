@@ -217,6 +217,11 @@ AngularSpringApp.controller('UInfoController', ['$scope', 'AccountService',
                     }
                 }
             );
+            $scope.contactEdit = false;
+        };
+
+        $scope.addContact = function(){
+            $scope.contactEdit = true;
         };
 
         $scope.editContact = function(contact){
@@ -233,6 +238,7 @@ AngularSpringApp.controller('UInfoController', ['$scope', 'AccountService',
                     }
                 }
             );
+            $scope.contactEdit = false;
         };
 
         $scope.deleteContact = function(id){
@@ -812,7 +818,7 @@ AngularSpringApp.controller('ACavalierController', ['$scope', 'UserService',
 AngularSpringApp.controller('AOrderController', ['$scope', 'OrderService', 'UserService',
     function($scope, OrderService, UserService){
         $scope.type;
-        $scope.cavalier;
+        $scope.cavalier_user_id;
 
         $scope.status;
         $scope.from;
@@ -879,17 +885,29 @@ AngularSpringApp.controller('AOrderController', ['$scope', 'OrderService', 'User
         };
 
         $scope.confirmAssign = function(id){
-
-            if($scope.cavalier == null){
+            alert($scope.cavalier_user_id);
+            alert(JSON.stringify($scope.cavaliers));
+            if($scope.cavalier_user_id == null){
                 alert("请先选择骑士！");
             } else {
-                OrderService.patch(id, {cavalier:$scope.cavalier}).success(
+                OrderService.patch(id, {cavalier:{id: $scope.cavalier_user_id}}).success(
                     function(data, status, headers, config){
                         $scope.refresh();
-                        $scope.cavalier = null;
+                        $scope.cavalier_user_id = null;
                     }
                 );
+                $scope.showAssign = false;
             }
+        };
+        $scope.cancelAssign = function(){
+            $scope.order = null;
+            $scope.cavalier_user_id = null;
+            $scope.showAssign = false;
+        };
+
+        $scope.assignDelivery = function(data){
+            $scope.order = data;
+            $scope.showAssign = true;
         };
 
         $scope.sendToMerchant = function(id){
@@ -908,6 +926,7 @@ AngularSpringApp.controller('AOrderController', ['$scope', 'OrderService', 'User
 
         $scope.refresh = function(){
             $scope.findOrderWithStatus($scope.status);
+            $scope.findAllCavaliers();
         };
 
         $scope.findAllCavaliers();
@@ -1017,6 +1036,18 @@ AngularSpringApp.controller('AUserController', ['$scope', 'RoleService', 'GroupS
             );
         };
 
+        $scope.queryUser = function(queryKey){
+            $scope.loading = true;
+
+            UserService.queryUser(queryKey)
+                .then(function(res){
+                    $scope.users = res.data;
+//                    return res.data;
+                });
+
+            $scope.loading = false;
+        };
+
         $scope.findById = function(id){
             UserService.findById(id).success(
                 function (data, status, headers, config) {
@@ -1033,6 +1064,9 @@ AngularSpringApp.controller('AUserController', ['$scope', 'RoleService', 'GroupS
                 function (data, status, headers, config) {
                     if(status == 200){
                         $scope.user = data;
+                        $scope.users = [];
+                        $scope.users.push($scope.user);
+                        $scope.user = null;
                     } else if (status == 201 ){
                         alert("No Groups Found");
                     }
@@ -1044,6 +1078,16 @@ AngularSpringApp.controller('AUserController', ['$scope', 'RoleService', 'GroupS
             UserService.create(data).success(
                 function(data, status, headers, config){
                     if(status == 201) {
+                        $scope.findByUsername(data.email);
+                    }
+                }
+            );
+        };
+
+        $scope.update = function (id, data) {
+            UserService.patch(id, data).success(
+                function(data, status, headers, config){
+                    if(status == 20) {
                         $scope.findByUsername(data.email);
                     }
                 }
@@ -1127,9 +1171,7 @@ AngularSpringApp.controller('AUserController', ['$scope', 'RoleService', 'GroupS
         };
 
         $scope.editUser = function(data){
-            $scope.createOrUpdate = true;
-            $scope.edit = true;
-            $scope.user = data;
+//            $scope.edit = true;
         };
 
         $scope.addGroup = function(uid){
@@ -1151,7 +1193,7 @@ AngularSpringApp.controller('AUserController', ['$scope', 'RoleService', 'GroupS
             $scope.roleAdd = false;
         };
 
-        $scope.findAll();
+//        $scope.findAll();
         $scope.findAllRoles();
         $scope.findAllGroups();
     }
