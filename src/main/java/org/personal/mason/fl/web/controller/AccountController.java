@@ -1,45 +1,25 @@
 package org.personal.mason.fl.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.personal.mason.fl.common.JPAUserDetails;
 import org.personal.mason.fl.common.JPAUserDetailsManager;
-import org.personal.mason.fl.domain.model.Contact;
-import org.personal.mason.fl.domain.model.Group;
-import org.personal.mason.fl.domain.model.Profile;
-import org.personal.mason.fl.domain.model.Role;
-import org.personal.mason.fl.domain.model.User;
+import org.personal.mason.fl.domain.model.*;
 import org.personal.mason.fl.domain.repository.ContactRepository;
 import org.personal.mason.fl.domain.repository.ProfileRepository;
 import org.personal.mason.fl.domain.repository.UserRepository;
-import org.personal.mason.fl.utils.convert.ContactConverter;
-import org.personal.mason.fl.utils.convert.ConvertType;
-import org.personal.mason.fl.utils.convert.GroupConverter;
-import org.personal.mason.fl.utils.convert.ProfileConverter;
-import org.personal.mason.fl.utils.convert.RoleConverter;
-import org.personal.mason.fl.utils.convert.UserConverter;
-import org.personal.mason.fl.web.pojo.PoContact;
-import org.personal.mason.fl.web.pojo.PoGroup;
-import org.personal.mason.fl.web.pojo.PoPassword;
-import org.personal.mason.fl.web.pojo.PoProfile;
-import org.personal.mason.fl.web.pojo.PoRole;
-import org.personal.mason.fl.web.pojo.PoUser;
+import org.personal.mason.fl.utils.convert.*;
+import org.personal.mason.fl.web.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mason on 6/22/14.
@@ -279,8 +259,9 @@ public class AccountController extends AbstractController {
             value = {"account/profile/contact/{id}"}
     )
     public ResponseEntity<PoContact> partialUpdateContact(@PathVariable Long id, @RequestBody PoContact poContact, UriComponentsBuilder builder) {
-        Contact contact = ContactConverter.toModel(poContact);
+        Contact contact = ContactConverter.toModel(poContact, ConvertType.FLAT);
         Contact model = contactRepository.findOne(id);
+
         mergeModel(model, contact);
         Contact result = contactRepository.saveAndFlush(model);
 

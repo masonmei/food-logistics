@@ -92,40 +92,65 @@ AngularSpringApp.factory('Register', ['$http', function ($http) {
     };
 }]);
 
-AngularSpringApp.factory('Session', [function(){
-    return {
-        create:function(login, user_number, profile, roles, groups){
-            this.login = login;
-            this.user_number = user_number;
-            this.setProfile(profile);
-            this.setRoles(roles);
-            this.groups = groups;
-        },
-        setProfile:function(profile){
-            this.profile = profile;
-        },
-        setRoles:function(roles){
-            this.roles = roles;
-        },
-        invalidate:function(){
-            this.login = null;
-            this.user_number = null;
-            this.profile = null;
-            this.roles = null;
-            this.groups = null;
-        },
-        hasRole:function(rolename){
-            if(this.roles != null){
-                for(var i = 0; i < this.roles.length; i++){
-                    var role  = this.roles[i];
-                    if(role.name === rolename){
-                        return true;
-                    }
+AngularSpringApp.factory('Session', ['$rootScope', '$cookieStore', 'USER_ROLES', function($rootScope, $cookieStore, USER_ROLES){
+    var Session = {};
+    Session.create = function(data){
+        Session.login = data.email;
+        Session.user_number = data.user_number;
+        Session.setRoles(data.roles);
+        $cookieStore.put('cookieAccount', data);
+    };
+    Session.setRoles=function(roles){
+        Session.roles = roles;
+    };
+    Session.invalidate=function(){
+        $cookieStore.remove('cookieAccount');
+        Session.login = null;
+        Session.user_number = null;
+        Session.roles = null;
+    };
+    Session.hasRole=function(rolename){
+        if(Session.roles != null){
+            for(var i = 0; i < Session.roles.length; i++){
+                var role  = Session.roles[i];
+                if(role.name === rolename){
+                    return true;
                 }
             }
-            return false;
+        }
+        return false;
+    };
+    Session.isAuthorized= function (authorizedRoles) {
+        if (!angular.isArray(authorizedRoles)) {
+            if (authorizedRoles == '*') {
+                return true;
+            }
+
+            authorizedRoles = [authorizedRoles];
+        }
+
+        var isAuthorized = false;
+        angular.forEach(authorizedRoles, function(authorizedRole) {
+            var authorized = !!Session.login && Session.hasRole(authorizedRole);
+
+            if (authorized || authorizedRole == '*') {
+                isAuthorized = true;
+            }
+        });
+        return isAuthorized;
+    };
+    Session.restoreSession= function(){
+        var data = $cookieStore.get('cookieAccount');
+        if(!!data){
+            Session.login = data.email;
+            Session.user_number = data.user_number;
+            Session.roles = data.roles;
+        } else {
+            $rootScope.$broadcast('event:auth-loginRequired');
         }
     };
+
+    return Session;
 }]);
 
 AngularSpringApp.factory('AccountService', ['$http', function($http){
@@ -480,7 +505,7 @@ AngularSpringApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 
     function ($rootScope, $http, authService, Session, AccountService) {
         return {
             login: function (param) {
-                var data ="username=" + param.username +"&password=" + param.password +"&remember=" + param.rememberMe +"&submit=Login";
+                var data ="username=" + param.username +"&password=" + param.password +"&_spring_security_remember_me=" + param.rememberMe +"&submit=Login";
                 $http.post('/user/login', data, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
@@ -488,9 +513,8 @@ AngularSpringApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 
                     ignoreAuthModule: 'ignoreAuthModule'
                 }).success(function (data, status, headers, config) {
                     AccountService.getMyInfo().success(function(data) {
-                        Session.create(data.email, data.user_number, data.profile, data.roles, data.groups);
-                        $rootScope.account = Session;
-                        authService.loginConfirmed(data);
+                        Session.create(data);
+                        authService.loginConfirmed();
                     }).error(function(data, status, headers, config){
                         $rootScope.authenticationError = true;
                         Session.invalidate();
@@ -507,15 +531,13 @@ AngularSpringApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 
                 }).success(function (data, status, headers, config) {
                     if (!Session.login) {
                         AccountService.getMyInfo(function(data) {
-                            Session.create(data.email, data.user_number, data.profile, data.roles, data.groups);
-                            $rootScope.account = Session;
+                            Session.create(data);
 
-                            if (!$rootScope.isAuthorized(authorizedRoles)) {
+                            if (!Session.isAuthorized(authorizedRoles)) {
                                 event.preventDefault();
                                 // user is not allowed
                                 $rootScope.$broadcast("event:auth-notAuthorized");
                             }
-
                             $rootScope.authenticated = true;
                         });
                     }
@@ -523,26 +545,6 @@ AngularSpringApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 
                 }).error(function (data, status, headers, config) {
                     $rootScope.authenticated = false;
                 });
-            },
-            isAuthorized: function (authorizedRoles) {
-                if (!angular.isArray(authorizedRoles)) {
-                    if (authorizedRoles == '*') {
-                        return true;
-                    }
-
-                    authorizedRoles = [authorizedRoles];
-                }
-
-                var isAuthorized = false;
-                angular.forEach(authorizedRoles, function(authorizedRole) {
-                    var authorized = !!Session.login && Session.hasRole(authorizedRole);
-
-                    if (authorized || authorizedRole == '*') {
-                        isAuthorized = true;
-                    }
-                });
-
-                return isAuthorized;
             },
             logout: function () {
                 $rootScope.authenticationError = false;

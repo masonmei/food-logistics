@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,15 +24,18 @@ public class SpringSecurityAuditorAware implements AuditorAware<User>, Applicati
 
     @Override
     public User getCurrentAuditor() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User principal;
-        if (authentication == null || !authentication.isAuthenticated()) {
-            principal = systemUser;
+        String currentLogin = SecurityUtils.getCurrentLogin();
+        if(currentLogin == null){
+            return systemUser;
         } else {
-            principal = (User) authentication.getPrincipal();
+            try {
+                return userRepository.loadUsersByUserName(currentLogin).get(0);
+            } catch (Exception e) {
+            }
         }
-        logger.info(String.format("Current auditor is >>> %s", principal));
-        return principal;
+
+        logger.info(String.format("Current auditor is >>> %s", systemUser));
+        return systemUser;
     }
 
     @Override

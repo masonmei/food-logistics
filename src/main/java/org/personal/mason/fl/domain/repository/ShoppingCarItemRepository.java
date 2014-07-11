@@ -1,7 +1,6 @@
 package org.personal.mason.fl.domain.repository;
 
 import org.personal.mason.fl.domain.model.ShoppingCarItem;
-import org.personal.mason.fl.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

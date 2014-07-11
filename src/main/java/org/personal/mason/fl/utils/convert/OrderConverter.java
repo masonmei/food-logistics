@@ -2,7 +2,6 @@ package org.personal.mason.fl.utils.convert;
 
 import org.personal.mason.fl.domain.model.Order;
 import org.personal.mason.fl.domain.model.PurchaseItem;
-import org.personal.mason.fl.domain.model.User;
 import org.personal.mason.fl.web.pojo.PoOrder;
 
 import java.util.ArrayList;

@@ -75,7 +75,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
             .rememberMe().
                 rememberMeServices(rememberMeService)
-                .key("test")
+                .key(env.getProperty("fl.security.rememberme.key", "remember_me_key"))
                 .and()
             .formLogin()
                 .loginProcessingUrl("/user/login")

@@ -1,5 +1,7 @@
 package org.personal.mason.fl.utils.convert;
 
+import org.personal.mason.fl.domain.model.Group;
+import org.personal.mason.fl.domain.model.Role;
 import org.personal.mason.fl.domain.model.User;
 import org.personal.mason.fl.web.pojo.PoUser;
 
@@ -33,10 +35,10 @@ public class UserConverter {
                     ProfileConverter.fromModel(model.getProfile(), ConvertType.FLAT)
             );
             poUser.setPoGroups(
-                    GroupConverter.fromModel(new ArrayList(model.getGroups()), ConvertType.FLAT)
+                    GroupConverter.fromModel(new ArrayList<Group>(model.getGroups()), ConvertType.FLAT)
             );
             poUser.setPoRoles(
-                    RoleConverter.fromModel(new ArrayList(model.getRoles()), ConvertType.FLAT)
+                    RoleConverter.fromModel(new ArrayList<Role>(model.getRoles()), ConvertType.FLAT)
             );
         }
 

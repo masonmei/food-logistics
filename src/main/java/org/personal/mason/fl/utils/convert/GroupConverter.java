@@ -1,6 +1,7 @@
 package org.personal.mason.fl.utils.convert;
 
 import org.personal.mason.fl.domain.model.Group;
+import org.personal.mason.fl.domain.model.Role;
 import org.personal.mason.fl.web.pojo.PoGroup;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class GroupConverter {
             }
             if(convertType.getPriority() >= ConvertType.FULL.getPriority()) {
                 poGroup.setPoRoles(
-                        RoleConverter.fromModel(new ArrayList(model.getRoles()), ConvertType.FLAT)
+                        RoleConverter.fromModel(new ArrayList<Role>(model.getRoles()), ConvertType.FLAT)
                 );
             }
         }

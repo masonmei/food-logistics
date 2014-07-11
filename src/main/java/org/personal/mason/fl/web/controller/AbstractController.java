@@ -11,8 +11,6 @@ import org.personal.mason.fl.domain.repository.UserRepository;
 import org.personal.mason.fl.service.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -53,7 +51,7 @@ public abstract class AbstractController {
                     continue;
                 }
                 if(value instanceof Collection){
-                    Collection colVal = (Collection) value;
+                    Collection<?> colVal = (Collection<?>) value;
                     if(colVal.isEmpty()){
                         continue;
                     }
@@ -144,7 +142,7 @@ public abstract class AbstractController {
         return null;
     }
 
-    protected Collection splitToArray(String status){
+    protected Collection<String> splitToArray(String status){
         if(status == null){
             status = "";
         }

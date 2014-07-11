@@ -34,7 +34,7 @@ public class CommentController extends AbstractController {
     public ResponseEntity<List<PoComment>> findAll() {
         List<PoComment> poComments = CommentConverter.fromModel(commentRepository.findAll());
         if (poComments.isEmpty()) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<List<PoComment>>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(poComments, HttpStatus.OK);
         }
@@ -47,9 +47,9 @@ public class CommentController extends AbstractController {
     public ResponseEntity<PoComment> findById(@PathVariable Long id) {
         PoComment poComment = CommentConverter.fromModel(commentRepository.findOne(id));
         if (poComment == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<PoComment>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity(poComment, HttpStatus.OK);
+            return new ResponseEntity<PoComment>(poComment, HttpStatus.OK);
         }
     }
 

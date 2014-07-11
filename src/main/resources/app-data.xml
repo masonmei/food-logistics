@@ -2,7 +2,8 @@
 <beans xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
@@ -32,5 +33,11 @@
 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
-    <jpa:repositories base-package="org.personal.mason.fl.domain.repository"/>
+    <jpa:repositories base-package="org.personal.mason.fl.domain.repository" entity-manager-factory-ref="entityManagerFactory"
+            transaction-manager-ref="transactionManager"/>
+
+    <jpa:auditing auditor-aware-ref="springSecurityAuditorAware" />
+
+    <bean class="org.springframework.data.jpa.domain.support.AuditingBeanFactoryPostProcessor"/>
+
 </beans>

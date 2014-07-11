@@ -3,8 +3,6 @@ package org.personal.mason.fl.web.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-import java.util.Date;
-
 /**
  * Created by mason on 7/7/14.
  */

@@ -1,11 +1,11 @@
 package org.personal.mason.fl.web.pojo;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+
+import java.util.List;
 
 /**
  * Created by mason on 6/24/14.

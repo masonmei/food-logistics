@@ -13,6 +13,8 @@ var AngularSpringApp =  angular.module('AngularSpringApp', [
 AngularSpringApp.config(['$locationProvider', '$routeProvider', '$httpProvider', 'USER_ROLES',
     function($locationProvider, $routeProvider, $httpProvider, USER_ROLES){
         $locationProvider.hashPrefix('!!!');
+        $httpProvider.defaults.withCredentials = true;
+
         $routeProvider
             .when('/register', {
                 templateUrl: '/view?vn=public/register',
@@ -37,7 +39,7 @@ AngularSpringApp.config(['$locationProvider', '$routeProvider', '$httpProvider',
             })
             .when('/findpassword', {
                 templateUrl: '/view?vn=public/findpassword',
-                controller: 'LogoutController',
+                controller: 'ResetPasswordController',
                 access: {
                     authorizedRoles: [USER_ROLES.all]
                 }
@@ -65,7 +67,7 @@ AngularSpringApp.config(['$locationProvider', '$routeProvider', '$httpProvider',
                     authorizedRoles: [USER_ROLES.user]
                 }
             })
-            .when('/user/password', {
+            .when('/user/pwd', {
                 templateUrl: '/view?vn=user/password',
                 controller: 'UChangePasswordController',
                 access: {
@@ -207,16 +209,10 @@ AngularSpringApp.config(['$locationProvider', '$routeProvider', '$httpProvider',
 }]).run(['$rootScope', '$location', '$http', 'AuthenticationSharedService', 'Session', 'USER_ROLES',
     function($rootScope, $location, $http, AuthenticationSharedService, Session, USER_ROLES){
         $rootScope.$on('$routeChangeStart', function (event, next) {
-            $rootScope.isAuthorized = AuthenticationSharedService.isAuthorized;
-//            $rootScope.userRoles = USER_ROLES;
-            $rootScope.isUser = Session.hasRole(USER_ROLES.user);
-            $rootScope.isMerchant = Session.hasRole(USER_ROLES.merchant);
-            $rootScope.isCavalier = Session.hasRole(USER_ROLES.cavalier);
-            $rootScope.isAdmin = Session.hasRole(USER_ROLES.admin);
             AuthenticationSharedService.valid(next.access.authorizedRoles);
         });
         // Call when the the client is confirmed
-        $rootScope.$on('event:auth-loginConfirmed', function(data) {
+        $rootScope.$on('event:auth-loginConfirmed', function() {
             $rootScope.authenticated = true;
             if ($location.path() === "/login") {
                 if(Session.hasRole(USER_ROLES.admin)){

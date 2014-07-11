@@ -1,21 +1,22 @@
 package org.personal.mason.fl.common;
 
-import org.personal.mason.fl.domain.model.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.personal.mason.fl.domain.model.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Created by mason on 6/30/14.
  */
 public class JPAUserDetails implements UserDetails {
 
-    private User user;
+	private static final long serialVersionUID = -8819484201008675440L;
+	private User user;
 
     public JPAUserDetails(User user) {
         this.user = user;
@@ -28,6 +29,7 @@ public class JPAUserDetails implements UserDetails {
         if(user != null) {
             List<GrantedAuthority> auths = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
             authorities = auths;
+            return authorities;
         }
         return Collections.emptyList();
     }

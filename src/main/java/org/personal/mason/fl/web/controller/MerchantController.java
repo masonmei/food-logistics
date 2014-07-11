@@ -1,8 +1,5 @@
 package org.personal.mason.fl.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.personal.mason.fl.domain.model.Merchant;
 import org.personal.mason.fl.domain.model.Product;
 import org.personal.mason.fl.domain.model.User;
@@ -25,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mason on 6/23/14.

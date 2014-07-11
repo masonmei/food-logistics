@@ -1,7 +1,14 @@
 package org.personal.mason.fl.service;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.time.DateUtils;
-import org.joda.time.LocalDate;
 import org.personal.mason.fl.common.JPAUserDetailsService;
 import org.personal.mason.fl.domain.model.PersistentToken;
 import org.personal.mason.fl.domain.model.User;
@@ -22,19 +29,13 @@ import org.springframework.security.web.authentication.rememberme.InvalidCookieE
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-
 /**
  * Created by mason on 7/1/14.
  */
-
 @Service
 public class FLJpaRememberMeService extends AbstractRememberMeServices {
+    private static final String DEFAULT = "remember_me_key";
+    private static final String KEY = "fl.security.rememberme.key";
     private final Logger logger = LoggerFactory.getLogger(FLJpaRememberMeService.class);
 
     private static final int TOKEN_VALIDITY_DAYS = 31;
@@ -45,12 +46,13 @@ public class FLJpaRememberMeService extends AbstractRememberMeServices {
 
     @Autowired
     public FLJpaRememberMeService(Environment env, JPAUserDetailsService userDetailsService){
-        super("test", userDetailsService);
+        super(env.getProperty(KEY, DEFAULT), userDetailsService);
         random = new SecureRandom();
     }
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private PersistentTokenRepository persistentTokenRepository;
 
 
@@ -66,7 +68,7 @@ public class FLJpaRememberMeService extends AbstractRememberMeServices {
         token.setIpAddress(request.getRemoteAddr());
         token.setUserAgent(request.getHeader("User-Agent"));
         try{
-            persistentTokenRepository.saveAndFlush(token);
+            persistentTokenRepository.save(token);
             addCookie(token, request, response);
         } catch (DataAccessException e){
             logger.error("Failed to save persistent token ", e);
@@ -143,7 +145,7 @@ public class FLJpaRememberMeService extends AbstractRememberMeServices {
         }
         return token;
     }
-
+    
     private void addCookie(PersistentToken token, HttpServletRequest request, HttpServletResponse response) {
         setCookie(
                 new String[]{token.getId().toString(), token.getTokenValue()},

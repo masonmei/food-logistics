@@ -1,57 +1,66 @@
 package org.personal.mason.fl.domain.model;
 
-import org.springframework.data.jpa.domain.AbstractAuditable;
-
-import javax.persistence.*;
 import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Created by mason on 7/3/14.
  */
 
 @Entity
-@Table(name="fl_shopping_car_item")
-public class ShoppingCarItem extends AbstractAuditable<User, Long> implements Serializable {
+@Table(name = "fl_shopping_car_item")
+public class ShoppingCarItem extends Auditing<User, Long> implements
+		Serializable {
 
-    @ManyToOne
-    @JoinColumn(name = "shopping_car_id", referencedColumnName = "id")
-    private ShoppingCar shoppingCar;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7708521931411885053L;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+	@ManyToOne
+	@JoinColumn(name = "shopping_car_id", referencedColumnName = "id")
+	private ShoppingCar shoppingCar;
 
-    @Column(name = "number")
-    private Integer number;
+	@ManyToOne
+	@JoinColumn(name = "product_id", nullable = false)
+	private Product product;
 
-    public ShoppingCarItem() {
-    }
+	@Column(name = "number")
+	private Integer number;
 
-    public ShoppingCarItem(Long id) {
-        setId(id);
-    }
+	public ShoppingCarItem() {
+	}
 
-    public ShoppingCar getShoppingCar() {
-        return shoppingCar;
-    }
+	public ShoppingCarItem(Long id) {
+		setId(id);
+	}
 
-    public void setShoppingCar(ShoppingCar shoppingCar) {
-        this.shoppingCar = shoppingCar;
-    }
+	public ShoppingCar getShoppingCar() {
+		return shoppingCar;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public void setShoppingCar(ShoppingCar shoppingCar) {
+		this.shoppingCar = shoppingCar;
+	}
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+	public Product getProduct() {
+		return product;
+	}
 
-    public Integer getNumber() {
-        return number;
-    }
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
 }

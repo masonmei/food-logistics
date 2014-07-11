@@ -1,21 +1,20 @@
 package org.personal.mason.fl.domain.model;
 
-import org.springframework.data.jpa.domain.AbstractAuditable;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * The persistent class for the user_role database table.
  */
 @Entity
 @Table(name = "fl_role")
-public class Role extends AbstractAuditable<User, Long> implements Serializable {
+public class Role extends Auditing<User, Long> implements Serializable {
 
 	public enum RoleType {
 		ROLE_USER("U"), ROLE_CAVALIER("C"), ROLE_MERCHANT("M"), ROLE_ADMINISTRATOR(

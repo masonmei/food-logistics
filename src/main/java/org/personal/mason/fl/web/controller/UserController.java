@@ -1,8 +1,5 @@
 package org.personal.mason.fl.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.personal.mason.fl.common.JpaUserDetailsDefaults;
 import org.personal.mason.fl.domain.model.Role;
 import org.personal.mason.fl.domain.model.User;
@@ -22,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mason on 7/2/14.

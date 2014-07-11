@@ -112,8 +112,8 @@ AngularSpringApp.controller('MerchantDetailController', ['$scope', '$routeParams
         $scope.findAllComment();
     }
 ]);
-AngularSpringApp.controller('MainController', ['$scope', 'MerchantService',
-    function ($scope, MerchantService) {
+AngularSpringApp.controller('MainController', ['$scope', 'MerchantService', 'Session',
+    function ($scope, MerchantService, Session) {
         $scope.merchants = [];
         $scope.merchant = {};
         $scope.editMode = false;
@@ -127,6 +127,31 @@ AngularSpringApp.controller('MainController', ['$scope', 'MerchantService',
         };
 
         $scope.loadAll();
+    }
+]);
+
+AngularSpringApp.controller('HeaderController',['$scope','Session','USER_ROLES',
+    function ($scope, Session, USER_ROLES) {
+        $scope.init = function(){
+            if(!Session.login){
+                Session.restoreSession();
+            }
+            $scope.authenticated = !!Session.login;
+            $scope.isAuthorized = Session.isAuthorized;
+            $scope.isUser = Session.hasRole(USER_ROLES.user);
+            $scope.isMerchant = Session.hasRole(USER_ROLES.merchant);
+            $scope.isCavalier = Session.hasRole(USER_ROLES.cavalier);
+            $scope.isAdmin = Session.hasRole(USER_ROLES.admin);
+        };
+
+        $scope.$on('$routeChangeStart', function (event, next) {
+            $scope.authenticated = !!Session.login;
+            $scope.isAuthorized = Session.isAuthorized;
+            $scope.isUser = Session.hasRole(USER_ROLES.user);
+            $scope.isMerchant = Session.hasRole(USER_ROLES.merchant);
+            $scope.isCavalier = Session.hasRole(USER_ROLES.cavalier);
+            $scope.isAdmin = Session.hasRole(USER_ROLES.admin);
+        });
     }
 ]);
 
@@ -166,6 +191,7 @@ AngularSpringApp.controller('UInfoController', ['$scope', 'AccountService',
     function($scope, AccountService){
         $scope.profileEdit = false;
         $scope.contactEdit = false;
+        $scope.edit = false;
 
         $scope.getAccountInfo = function(){
             AccountService.getMyInfo().success(
@@ -227,6 +253,7 @@ AngularSpringApp.controller('UInfoController', ['$scope', 'AccountService',
         $scope.editContact = function(contact){
             $scope.contact = contact;
             $scope.contactEdit = true;
+            $scope.edit = true;
         };
 
         $scope.updateContact = function(id, data){
@@ -235,10 +262,12 @@ AngularSpringApp.controller('UInfoController', ['$scope', 'AccountService',
                     if(status == 200){
                         $scope.myContacts();
                         $scope.contactEdit = false;
+                        $scope.edit = false;
                     }
                 }
             );
             $scope.contactEdit = false;
+            $scope.edit = false;
         };
 
         $scope.deleteContact = function(id){
@@ -1429,291 +1458,291 @@ AngularSpringApp.controller('AImageController', ['$scope', 'ImageService','$time
 ]);
 
 // ~ duplicated
-AngularSpringApp.controller('PasswordController', ['$scope', 'Password',
-    function ($scope, Password) {
-        $scope.success = null;
-        $scope.error = null;
-        $scope.doNotMatch = null;
-
-        $scope.changePassword = function () {
-            if ($scope.password != $scope.confirmPassword) {
-                $scope.doNotMatch = "ERROR";
-            } else {
-                $scope.doNotMatch = null;
-                Password.save($scope.password,
-                    function (value, responseHeaders) {
-                        $scope.error = null;
-                        $scope.success = 'OK';
-                    },
-                    function (httpResponse) {
-                        $scope.success = null;
-                        $scope.error = "ERROR";
-                    });
-            }
-        };
-    }]);
-
-AngularSpringApp.controller('MainController', ['$scope', 'MerchantService',
-    function ($scope, MerchantService) {
-        $scope.merchants = [];
-        $scope.merchant = {};
-        $scope.editMode = false;
-
-        $scope.loadAll = function(){
-            MerchantService.findAll().success(
-                function(data, status, headers, config){
-                    $scope.merchants = data;
-                }
-            );
-        };
-
-        $scope.loadAll();
-
-    }
-]);
-
-AngularSpringApp.controller('MerchantController', ['$scope', 'ImageService', 'MerchantService', 'BaseService','AuthenticationSharedService',
-    function ($scope, ImageService, MerchantService, BaseService, AuthenticationSharedService) {
-        $scope.isAuthorized = AuthenticationSharedService.isAuthorized;
-
-        $scope.merchants = [];
-        $scope.merchant = {};
-        $scope.editMode = false;
-
-        $scope.loadAll = function(){
-            MerchantService.findAll().success(
-                function(data, status, headers, config){
-                    $scope.merchants = data;
-                }
-            );
-        };
-
-        $scope.create = function (merchant) {
-            MerchantService.create(merchant).success(
-                function(data, status, headers, config){
-                    $scope.merchant = BaseService.loadRefer(headers);
-                    $scope.merchants.push(merchant);
-                    $scope.merchant = {};
-                }
-            );
-        };
-
-        $scope.update = function (merchant) {
-            MerchantService.patch(merchant).success(
-                function(data, status, headers, config){
-                    $scope.merchant = BaseService.loadRefer(headers);
-                    $scope.merchant.remove(merchant);
-                    $scope.merchants.push($scope.merchant);
-                    $scope.merchant = {};
-                }
-            );
-        };
-
-        $scope.remove = function(id){
-            MerchantService.remove(id).success(
-                function(data, status, headers, config){
-                    $scope.loadAll();
-                }
-            );
-        };
-
-        $scope.loadAll();
-    }
-]);
-
-AngularSpringApp.controller('MerchantDetailController', ['$scope', '$routeParams', '$modal', 'MerchantService', 'BaseService', 'ShoppingCarService', 'AuthenticationSharedService',
-    function($scope, $routeParams, $modal, MerchantService, BaseService, ShoppingCarService, AuthenticationSharedService){
-        $scope.editMode = false;
-
-        $scope.addItem = function(product){
-            ShoppingCarService.addItem({number: 1, product: product });
-        };
-
-        $scope.isAuthorized = AuthenticationSharedService.isAuthorized;
-
-        $scope.newProduct = function(){
-            $scope.editMode = true;
-            $scope.product = {};
-        };
-
-        $scope.editProduct = function(product){
-            $scope.editMode = true;
-            $scope.product = product;
-        };
-
-        $scope.findMerchant = function(){
-            MerchantService.findById($routeParams.id).success(
-                function(data, status, headers, config){
-                    $scope.merchant = data;
-                }
-            );
-        };
-
-        $scope.findAllProduct = function(){
-            MerchantService.findAllProduct($routeParams.id).success(
-                function(data, status, headers, config){
-                    $scope.products = data;
-                }
-            );
-        };
-
-        $scope.createProduct = function(data){
-            alert(JSON.stringify(data));
-            MerchantService.createProduct($routeParams.id, data).success(
-                function(data, status, headers, config){
-                    var products = BaseService.loadRefer(headers);
-                    $scope.findAllProduct();
-                    $scope.product = {};
-                }
-            );
-        };
-
-        $scope.updateProduct = function(id, data){
-            MerchantService.patchProduct($routeParams.id, id, data).success(
-                function(data, status, headers, config){
-                    var products = BaseService.loadRefer(headers);
-                    $scope.findAllProduct();
-                    $scope.product = {};
-                }
-            );
-        };
-
-        $scope.removeProduct = function(id){
-            MerchantService.deleteProduct($routeParams.id, id).success(
-                function(data, status, headers, config){
-                    $scope.findAllProduct();
-                }
-            );
-        };
-
-        $scope.resetProduct = function(){
-            $scope.editMode = false;
-            $scope.product = {};
-        };
-
-        $scope.findAllComment = function(){
-            MerchantService.findAllComment($routeParams.id).success(
-                function(data, status, headers, config){
-                    $scope.comments = data;
-                }
-            );
-        };
-
-        $scope.findMerchant();
-        $scope.findAllProduct();
-        $scope.findAllComment();
-    }
-]);
-
-AngularSpringApp.controller('ShoppingCarController', ['$scope', 'ShoppingCarService',
-    function($scope, ShoppingCarService){
-        $scope.clear = function(product){
-            ShoppingCarService.addItem(product).success(
-                function(data, status, headers, config){
-                    $scope.shoppingCar = [];
-                }
-            );
-        };
-        $scope.find = function(){
-            ShoppingCarService.find().success(
-                function(data, status, headers, config){
-                    $scope.shoppingCar = data;
-                }
-            );
-        };
-        $scope.addItem = function(product){
-            ShoppingCarService.addItem({number: 1, product: product }).success(
-                function(data, status, headers, config){
-                    $scope.find();
-                }
-            );
-        };
-        $scope.minusItem = function(product){
-            ShoppingCarService.addItem({number: -1, product: product }).success(
-                function(data, status, headers, config){
-                    $scope.find();
-                }
-            );
-        };
-        $scope.removeItem = function(id){
-            ShoppingCarService.removeItem(id).success(
-                function(data, status, headers, config){
-                    $scope.find();
-                }
-            )
-        };
-        $scope.countShoppingCarItem = function(items){
-            if(items === null){
-                return 0;
-            }
-            var number = 0;
-            for(var i = 0; i < items.length; i++){
-                number += items[i].number;
-            }
-            return number;
-        };
-        $scope.countShoppingCarPrice = function(items){
-            if(items === null){
-                return 0;
-            }
-            var number = 0;
-            for(var i = 0; i < items.length; i++){
-                number += items[i].number * items[i].product.price;
-            }
-            return number;
-        };
-
-        $scope.find();
-
-    }
-]);
-
-AngularSpringApp.controller('AccountController', ['$scope',
-    function ($scope) {
-    }
-]);
-
-AngularSpringApp.controller('OrderController', ['$scope',
-    function ($scope) {
-        $scope.findInDeliveryOrders = function(){
-
-        };
-
-        $scope.findDeliveriedOrders = function(){
-
-        };
-
-        $scope.updateStatus = function(){
-
-        };
-
-        $scope.findMerchantOrders = function(){
-
-        };
-
-        $scope.findUserFinishedOrders = function(){
-
-        };
-
-        $scope.findUnfinishedOrders = function(){
-
-        };
-
-        $scope.createOrder = function(){
-
-        };
-
-        $scope.updateOrder = function(){
-
-        };
-
-        $scope.removeOrder = function(id){
-
-        };
-    }
-]);
-
-AngularSpringApp.controller('AdminController', ['$scope',
-    function ($scope) {
-    }
-]);
+//AngularSpringApp.controller('PasswordController', ['$scope', 'Password',
+//    function ($scope, Password) {
+//        $scope.success = null;
+//        $scope.error = null;
+//        $scope.doNotMatch = null;
+//
+//        $scope.changePassword = function () {
+//            if ($scope.password != $scope.confirmPassword) {
+//                $scope.doNotMatch = "ERROR";
+//            } else {
+//                $scope.doNotMatch = null;
+//                Password.save($scope.password,
+//                    function (value, responseHeaders) {
+//                        $scope.error = null;
+//                        $scope.success = 'OK';
+//                    },
+//                    function (httpResponse) {
+//                        $scope.success = null;
+//                        $scope.error = "ERROR";
+//                    });
+//            }
+//        };
+//    }]);
+//
+//AngularSpringApp.controller('MainController', ['$scope', 'MerchantService',
+//    function ($scope, MerchantService) {
+//        $scope.merchants = [];
+//        $scope.merchant = {};
+//        $scope.editMode = false;
+//
+//        $scope.loadAll = function(){
+//            MerchantService.findAll().success(
+//                function(data, status, headers, config){
+//                    $scope.merchants = data;
+//                }
+//            );
+//        };
+//
+//        $scope.loadAll();
+//
+//    }
+//]);
+//
+//AngularSpringApp.controller('MerchantController', ['$scope', 'ImageService', 'MerchantService', 'BaseService','AuthenticationSharedService',
+//    function ($scope, ImageService, MerchantService, BaseService, AuthenticationSharedService) {
+//        $scope.isAuthorized = AuthenticationSharedService.isAuthorized;
+//
+//        $scope.merchants = [];
+//        $scope.merchant = {};
+//        $scope.editMode = false;
+//
+//        $scope.loadAll = function(){
+//            MerchantService.findAll().success(
+//                function(data, status, headers, config){
+//                    $scope.merchants = data;
+//                }
+//            );
+//        };
+//
+//        $scope.create = function (merchant) {
+//            MerchantService.create(merchant).success(
+//                function(data, status, headers, config){
+//                    $scope.merchant = BaseService.loadRefer(headers);
+//                    $scope.merchants.push(merchant);
+//                    $scope.merchant = {};
+//                }
+//            );
+//        };
+//
+//        $scope.update = function (merchant) {
+//            MerchantService.patch(merchant).success(
+//                function(data, status, headers, config){
+//                    $scope.merchant = BaseService.loadRefer(headers);
+//                    $scope.merchant.remove(merchant);
+//                    $scope.merchants.push($scope.merchant);
+//                    $scope.merchant = {};
+//                }
+//            );
+//        };
+//
+//        $scope.remove = function(id){
+//            MerchantService.remove(id).success(
+//                function(data, status, headers, config){
+//                    $scope.loadAll();
+//                }
+//            );
+//        };
+//
+//        $scope.loadAll();
+//    }
+//]);
+//
+//AngularSpringApp.controller('MerchantDetailController', ['$scope', '$routeParams', '$modal', 'MerchantService', 'BaseService', 'ShoppingCarService', 'AuthenticationSharedService',
+//    function($scope, $routeParams, $modal, MerchantService, BaseService, ShoppingCarService, AuthenticationSharedService){
+//        $scope.editMode = false;
+//
+//        $scope.addItem = function(product){
+//            ShoppingCarService.addItem({number: 1, product: product });
+//        };
+//
+//        $scope.isAuthorized = AuthenticationSharedService.isAuthorized;
+//
+//        $scope.newProduct = function(){
+//            $scope.editMode = true;
+//            $scope.product = {};
+//        };
+//
+//        $scope.editProduct = function(product){
+//            $scope.editMode = true;
+//            $scope.product = product;
+//        };
+//
+//        $scope.findMerchant = function(){
+//            MerchantService.findById($routeParams.id).success(
+//                function(data, status, headers, config){
+//                    $scope.merchant = data;
+//                }
+//            );
+//        };
+//
+//        $scope.findAllProduct = function(){
+//            MerchantService.findAllProduct($routeParams.id).success(
+//                function(data, status, headers, config){
+//                    $scope.products = data;
+//                }
+//            );
+//        };
+//
+//        $scope.createProduct = function(data){
+//            alert(JSON.stringify(data));
+//            MerchantService.createProduct($routeParams.id, data).success(
+//                function(data, status, headers, config){
+//                    var products = BaseService.loadRefer(headers);
+//                    $scope.findAllProduct();
+//                    $scope.product = {};
+//                }
+//            );
+//        };
+//
+//        $scope.updateProduct = function(id, data){
+//            MerchantService.patchProduct($routeParams.id, id, data).success(
+//                function(data, status, headers, config){
+//                    var products = BaseService.loadRefer(headers);
+//                    $scope.findAllProduct();
+//                    $scope.product = {};
+//                }
+//            );
+//        };
+//
+//        $scope.removeProduct = function(id){
+//            MerchantService.deleteProduct($routeParams.id, id).success(
+//                function(data, status, headers, config){
+//                    $scope.findAllProduct();
+//                }
+//            );
+//        };
+//
+//        $scope.resetProduct = function(){
+//            $scope.editMode = false;
+//            $scope.product = {};
+//        };
+//
+//        $scope.findAllComment = function(){
+//            MerchantService.findAllComment($routeParams.id).success(
+//                function(data, status, headers, config){
+//                    $scope.comments = data;
+//                }
+//            );
+//        };
+//
+//        $scope.findMerchant();
+//        $scope.findAllProduct();
+//        $scope.findAllComment();
+//    }
+//]);
+//
+//AngularSpringApp.controller('ShoppingCarController', ['$scope', 'ShoppingCarService',
+//    function($scope, ShoppingCarService){
+//        $scope.clear = function(product){
+//            ShoppingCarService.addItem(product).success(
+//                function(data, status, headers, config){
+//                    $scope.shoppingCar = [];
+//                }
+//            );
+//        };
+//        $scope.find = function(){
+//            ShoppingCarService.find().success(
+//                function(data, status, headers, config){
+//                    $scope.shoppingCar = data;
+//                }
+//            );
+//        };
+//        $scope.addItem = function(product){
+//            ShoppingCarService.addItem({number: 1, product: product }).success(
+//                function(data, status, headers, config){
+//                    $scope.find();
+//                }
+//            );
+//        };
+//        $scope.minusItem = function(product){
+//            ShoppingCarService.addItem({number: -1, product: product }).success(
+//                function(data, status, headers, config){
+//                    $scope.find();
+//                }
+//            );
+//        };
+//        $scope.removeItem = function(id){
+//            ShoppingCarService.removeItem(id).success(
+//                function(data, status, headers, config){
+//                    $scope.find();
+//                }
+//            )
+//        };
+//        $scope.countShoppingCarItem = function(items){
+//            if(items === null){
+//                return 0;
+//            }
+//            var number = 0;
+//            for(var i = 0; i < items.length; i++){
+//                number += items[i].number;
+//            }
+//            return number;
+//        };
+//        $scope.countShoppingCarPrice = function(items){
+//            if(items === null){
+//                return 0;
+//            }
+//            var number = 0;
+//            for(var i = 0; i < items.length; i++){
+//                number += items[i].number * items[i].product.price;
+//            }
+//            return number;
+//        };
+//
+//        $scope.find();
+//
+//    }
+//]);
+//
+//AngularSpringApp.controller('AccountController', ['$scope',
+//    function ($scope) {
+//    }
+//]);
+//
+//AngularSpringApp.controller('OrderController', ['$scope',
+//    function ($scope) {
+//        $scope.findInDeliveryOrders = function(){
+//
+//        };
+//
+//        $scope.findDeliveriedOrders = function(){
+//
+//        };
+//
+//        $scope.updateStatus = function(){
+//
+//        };
+//
+//        $scope.findMerchantOrders = function(){
+//
+//        };
+//
+//        $scope.findUserFinishedOrders = function(){
+//
+//        };
+//
+//        $scope.findUnfinishedOrders = function(){
+//
+//        };
+//
+//        $scope.createOrder = function(){
+//
+//        };
+//
+//        $scope.updateOrder = function(){
+//
+//        };
+//
+//        $scope.removeOrder = function(id){
+//
+//        };
+//    }
+//]);
+//
+//AngularSpringApp.controller('AdminController', ['$scope',
+//    function ($scope) {
+//    }
+//]);

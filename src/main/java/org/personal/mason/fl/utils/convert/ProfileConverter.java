@@ -1,5 +1,6 @@
 package org.personal.mason.fl.utils.convert;
 
+import org.personal.mason.fl.domain.model.Contact;
 import org.personal.mason.fl.domain.model.Profile;
 import org.personal.mason.fl.web.pojo.PoProfile;
 
@@ -30,7 +31,7 @@ public class ProfileConverter {
             }
             if(convertType.getPriority() >= ConvertType.FULL.getPriority()){
                 poProfile.setPoContacts(
-                        ContactConverter.fromModel(new ArrayList(model.getContacts()), ConvertType.KEY_ONLY)
+                        ContactConverter.fromModel(new ArrayList<Contact>(model.getContacts()), ConvertType.KEY_ONLY)
                 );
             }
 
@@ -74,7 +75,7 @@ public class ProfileConverter {
             }
             if (convertType.getPriority() >= ConvertType.FULL.getPriority()) {
                 model.setContacts(
-                        new HashSet(ContactConverter.toModel(poProfile.getPoContacts(), ConvertType.KEY_ONLY))
+                        new HashSet<Contact>(ContactConverter.toModel(poProfile.getPoContacts(), ConvertType.KEY_ONLY))
                 );
             }
         }

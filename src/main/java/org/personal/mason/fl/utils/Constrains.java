@@ -1,11 +1,8 @@
 package org.personal.mason.fl.utils;
 
-import org.apache.commons.lang.time.DateFormatUtils;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by mason on 7/3/14.

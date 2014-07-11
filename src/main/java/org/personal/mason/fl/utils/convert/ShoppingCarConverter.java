@@ -1,6 +1,7 @@
 package org.personal.mason.fl.utils.convert;
 
 import org.personal.mason.fl.domain.model.ShoppingCar;
+import org.personal.mason.fl.domain.model.ShoppingCarItem;
 import org.personal.mason.fl.web.pojo.PoShoppingCar;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class ShoppingCarConverter {
             }
             if (convertType.getPriority() >= ConvertType.FULL.getPriority()) {
                 poShoppingCar.setPoShoppingCarItems(
-                        ShoppingCarItemConverter.fromModel(new ArrayList(model.getShoppingCarItems()), ConvertType.FULL)
+                        ShoppingCarItemConverter.fromModel(new ArrayList<ShoppingCarItem>(model.getShoppingCarItems()), ConvertType.FULL)
                 );
             }
         }

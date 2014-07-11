@@ -1,7 +1,6 @@
 package org.personal.mason.fl.common;
 
 import org.personal.mason.fl.domain.model.Group;
-import org.personal.mason.fl.domain.model.Profile;
 import org.personal.mason.fl.domain.model.Role;
 import org.personal.mason.fl.domain.model.User;
 import org.personal.mason.fl.domain.repository.GroupRepository;
@@ -374,11 +373,6 @@ public class JPAUserDetailsManager extends JPAUserDetailsService implements User
 
     private void setDefaultInformation(User model) {
         jpaUserDetailsDefaults.initialSettings(model);
-    }
-
-    private void insertUserAuthorities(User user, UserDetails details) {
-        Set<Role> roles = getRolesWithAuthorities(details.getAuthorities());
-        user.setRoles(roles);
     }
 
     private Set<Role> getRolesWithAuthorities(Collection<? extends GrantedAuthority> authorities) {
