@@ -134,7 +134,7 @@ public class OrderController extends AbstractController {
                 order.setOrderNumber(UserNumberUtils.createNumber("NUM_", ++count));
                 order.setDeliveryFee(merchant.getDeliveryFee());
                 order.setTotal(total);
-                order.setMeetTime(DateUtils.toDate(poCheckout.getMeetTime()));
+                order.setMeetTime(poCheckout.getMeetTime());
                 order.setAdditionInfo(poCheckout.getAdditionInfo());
                 orders.add(order);
             }

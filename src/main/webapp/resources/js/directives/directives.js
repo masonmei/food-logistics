@@ -132,5 +132,19 @@ angular.module('AngularSpringApp')
                 });
             }
         };
-    });
+    })
+    .directive('showTab',
+        function () {
+            return {
+                link: function (scope, element, attrs) {
+                    var tabId = attrs['show-tab'];
+                    var tab = element.
+                    element.click(function(e) {
+                        e.preventDefault();
+                        $(element).tab('show');
+                    });
+                }
+            };
+        }
+    );
 ;

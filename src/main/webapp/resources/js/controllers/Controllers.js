@@ -29,6 +29,7 @@ AngularSpringApp.controller('RegisterController', ['$scope', 'Register',
         $scope.error = null;
         $scope.doNotMatch = null;
         $scope.errorUserExists = null;
+        $scope.agreeTerms = false;
 
         $scope.register = function () {
             alert($scope.account);
@@ -78,7 +79,14 @@ AngularSpringApp.controller('RegisterController', ['$scope', 'Register',
 ]);
 AngularSpringApp.controller('ResetPasswordController', ['$scope', 'AccountService',
     function($scope, AccountService){
-        //TODO
+        $scope.find = {};
+        $scope.sendEmail = function(){
+            if(!$scope.find || !$scope.find.email){
+                alert('请输入您的邮箱地址！');
+            } else {
+                //TODO
+            }
+        }
     }
 ]);
 AngularSpringApp.controller('MerchantDetailController', ['$scope', '$routeParams', '$modal', 'MerchantService', 'BaseService', 'ShoppingCarService', 'AuthenticationSharedService',
@@ -107,6 +115,15 @@ AngularSpringApp.controller('MerchantDetailController', ['$scope', '$routeParams
             );
         };
 
+        $scope.addItem = function(product){
+            alert("add");
+            ShoppingCarService.addItem({number: 1, product: product }).success(
+                function(data, status, headers, config){
+                    $scope.find();
+                }
+            );
+        };
+
         $scope.findMerchant();
         $scope.findAllProduct();
         $scope.findAllComment();
@@ -121,7 +138,11 @@ AngularSpringApp.controller('MainController', ['$scope', 'MerchantService', 'Ses
         $scope.loadAll = function(){
             MerchantService.findAll().success(
                 function(data, status, headers, config){
+                    for(var i = 0; i < data.length; i++){
+                        data[i].rate = 4;
+                    }
                     $scope.merchants = data;
+
                 }
             );
         };
@@ -287,7 +308,43 @@ AngularSpringApp.controller('UInfoController', ['$scope', 'AccountService',
 AngularSpringApp.controller('UShoppingCarController', ['$scope', 'ShoppingCarService', 'AccountService','OrderService',
     function($scope, ShoppingCarService, AccountService, OrderService){
         $scope.checkoutModel = {};
-        $scope.datepickerOpened = false;
+
+
+        //DATE AND TIME
+        $scope.today = function() {
+            $scope.meatDate = new Date();
+        };
+        $scope.today();
+
+        $scope.clear = function () {
+            $scope.meatDate = null;
+        };
+
+        $scope.toggleMin = function() {
+            var now = new Date();
+            var maxDate = new Date();
+
+            maxDate.setTime(maxDate.getTime() + 7*24*3600*1000);
+            $scope.minDate = $scope.minDate ? null : now;
+            $scope.maxDate = $scope.maxDate ? null : maxDate;
+        };
+        $scope.toggleMin();
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
+
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+
+        $scope.format = 'yyyy-MM-dd';
+
+
 
         $scope.clear = function(product){
             ShoppingCarService.addItem(product).success(
@@ -304,6 +361,7 @@ AngularSpringApp.controller('UShoppingCarController', ['$scope', 'ShoppingCarSer
             );
         };
         $scope.addItem = function(product){
+            alert("add");
             ShoppingCarService.addItem({number: 1, product: product }).success(
                 function(data, status, headers, config){
                     $scope.find();
@@ -368,23 +426,44 @@ AngularSpringApp.controller('UShoppingCarController', ['$scope', 'ShoppingCarSer
             $scope.checkEnableCheckout();
 
             var cmodel = {};
-            if($scope.meet_time == null){
-                alert("用餐时间不能为空");
-            } else {
-                alert($scope.meet_time);
-                cmodel.meet_time = $scope.meet_time;
-                alert(cmodel.meet_time);
-            }
-            alert($scope.addition_info);
-            cmodel.addition_info = $scope.addition_info;
-            cmodel.contact = $scope.contact;
+            $scope.buildMeatTime();
 
+            cmodel.meet_time = $scope.meet_time;
+
+            cmodel.addition_info = $scope.addition_info;
+            if(cmodel.addition_info === undefined){
+                cmodel.addition_info = '';
+            }
+
+            cmodel.contact = $scope.contact;
+            if(cmodel.contact === undefined){
+                alert("请选择或输入送餐地址");
+                return;
+            }
             OrderService.checkout(cmodel).success(
                 function(data, status, headers, config){
                     $scope.enableCheckout = false;
                     $scope.checkoutModel = {};
+                    $scope.myContacts();
+                    $scope.find();
+                    $scope.checkOuted = true;
                 }
             );
+        };
+
+        $scope.buildMeatTime = function(){
+            if(!$scope.meatDate){
+                alert("请选择用餐日期");
+                return;
+            }
+            var minMeetTime = new Date();
+            minMeetTime.setTime(minMeetTime.getTime() + 1 * 3600 * 1000);
+            if($scope.meatDate < minMeetTime){
+                alert("最早用餐时间不能少于一个小时！");
+                return;
+            } else{
+                $scope.meet_time = $scope.meatDate;
+            }
         };
 
         $scope.checkEnableCheckout = function(){
@@ -392,8 +471,8 @@ AngularSpringApp.controller('UShoppingCarController', ['$scope', 'ShoppingCarSer
                 $scope.shoppingCar.items &&
                 $scope.shoppingCar.items.length > 0){
 
-                if($scope.checkoutModel.contact &&
-                    $scope.checkoutModel.contact.id != null){
+                if($scope.contact &&
+                    $scope.contact.id != null){
                     $scope.enableCheckout = true;
                 } else {
                     if($scope.contact &&
@@ -420,6 +499,24 @@ AngularSpringApp.controller('UOrderController', ['$scope', 'OrderService',
         $scope.status;
         $scope.from;
         $scope.to;
+
+        $scope.open = function($event, order) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            if(order == 0){
+                $scope.fromOpened = true;
+            } else if(order == 1){
+                $scope.toOpened = true;
+            }
+        };
+
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+
+        $scope.format = 'yyyy-MM-dd';
 
         $scope.initStatus = function(){
             $scope.noContent = false;
@@ -448,7 +545,6 @@ AngularSpringApp.controller('UOrderController', ['$scope', 'OrderService',
                 query += $scope.status;
             }
             if($scope.from){
-                alert($scope.from);
                 query += '&from=';
                 query += $scope.from.toISOString();
 
@@ -457,17 +553,21 @@ AngularSpringApp.controller('UOrderController', ['$scope', 'OrderService',
                 query += '&to=';
                 query += $scope.to.toISOString();
             }
-            alert(query);
-            OrderService.findUserOrder(query).success(
-                function(data, status, headers, config){
-                    if(status == 200){
-                        $scope.results = data;
-                    } else if(status == 204){
-                        $scope.results = [];
-                        $scope.noQueryResult = true;
+
+            if(query == ''){
+                alert("请输入过滤条件!")
+            } else {
+                OrderService.findUserOrder(query).success(
+                    function(data, status, headers, config){
+                        if(status == 200){
+                            $scope.results = data;
+                        } else if(status == 204){
+                            $scope.results = [];
+                            $scope.noQueryResult = true;
+                        }
                     }
-                }
-            );
+                );
+            }
         };
         $scope.statusList = [];
         $scope.loadAllStatus = function(){
@@ -549,6 +649,24 @@ AngularSpringApp.controller('CDeliveredController', ['$scope', 'OrderService',
         $scope.from;
         $scope.to;
 
+        $scope.open = function($event, order) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            if(order == 0){
+                $scope.fromOpened = true;
+            } else if(order == 1){
+                $scope.toOpened = true;
+            }
+        };
+
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+
+        $scope.format = 'yyyy-MM-dd';
+
         $scope.initStatus = function(){
             $scope.noQueryResult = false;
         };
@@ -578,7 +696,7 @@ AngularSpringApp.controller('CDeliveredController', ['$scope', 'OrderService',
             );
         };
 
-        $scope.queryFinishedOrders();
+//        $scope.queryFinishedOrders();
     }
 ]);
 

@@ -33,9 +33,16 @@ angular.module('angularjs-bootstrap-datetimepicker', [])
                 format: '@',
                 todayBtn: '@',
                 weekStart: '@',
-                minuteStep: '@'
+                minuteStep: '@',
+                startDate: '@',
+                endDate: '@'
             },
             template:
+//                '<div class="input-group date fl_datepicker">' +
+//                '    <input type="text" class="form-control" />' +
+//                '    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>' +
+//                '    </span>' +
+//                '</div>',
                 '<div class="input-group date form-datetime">' +
                 '   <input class="form-control" size="16" type="text" value="" readonly>' +
                 '   <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>' +
@@ -54,6 +61,8 @@ angular.module('angularjs-bootstrap-datetimepicker', [])
                     format: _byDefault(scope.format, 'yyyy-mm-dd'),
                     weekStart: _byDefault(scope.weekStart, 1),
                     todayBtn: _byDefault(scope.todayBtn, 'true') === 'true',
+                    startDate: _byDefault(scope.startDate, '2014-01-01'),
+                    endDate: _byDefault(scope.endDate, '2020-12-31'),
                     autoclose: 1,
                     minView: 2,
                     showMeridian: 1

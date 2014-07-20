@@ -3,6 +3,8 @@ package org.personal.mason.fl.web.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import java.util.Date;
+
 /**
  * Created by mason on 7/7/14.
  */
@@ -14,7 +16,7 @@ public class PoCheckout {
     @JsonProperty("addition_info")
     private String additionInfo;
     @JsonProperty("meet_time")
-    private String meetTime;
+    private Date meetTime;
 
     public PoContact getPoContact() {
         return poContact;
@@ -32,11 +34,11 @@ public class PoCheckout {
         this.additionInfo = additionInfo;
     }
 
-    public String getMeetTime() {
+    public Date getMeetTime() {
         return meetTime;
     }
 
-    public void setMeetTime(String meetTime) {
+    public void setMeetTime(Date meetTime) {
         this.meetTime = meetTime;
     }
 }

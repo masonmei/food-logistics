@@ -540,10 +540,11 @@ AngularSpringApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 
                             }
                             $rootScope.authenticated = true;
                         });
+                        }
+                        $rootScope.authenticated = !!Session.login;
                     }
-                    $rootScope.authenticated = !!Session.login;
-                }).error(function (data, status, headers, config) {
-                    $rootScope.authenticated = false;
+                ).error(function (data, status, headers, config) {
+                        $rootScope.authenticated = false;
                 });
             },
             logout: function () {

@@ -10,7 +10,7 @@ import java.math.BigInteger;
 /**
  * Created by mason on 6/24/14.
  */
-@JsonRootName("comment-merchant")
+@JsonRootName("comment_merchant")
 @JsonInclude(Include.NON_NULL)
 public class PoComment {
     @JsonProperty("id")
