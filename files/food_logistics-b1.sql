@@ -14,6 +14,13 @@
  Date: 07/08/2014 20:46:26 PM
 */
 
+/*
+ 1. 创建一个名称为food_logistics的数据库，用户名为 root, 密码为空
+ 2. 添加环境变量 -Dspring.profiles.active=local
+ 3. 打开mysql客户端，连接数据库，并执行该脚本
+ 4. 默认管理员用户名密码为admin@admin.com/1234567890
+*/
+
 SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 

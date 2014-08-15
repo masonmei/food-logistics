@@ -13,7 +13,7 @@
         <div ng-repeat="order in results" class="panel panel-success">
             <div class="panel-heading">
                 <h4 class="panel-title">订单号:{{order.order_number}}
-                    <span class="small"> [ 订单状态: {{order.order_status}} ] </span>
+                    <span class="small"> [ 订单状态: {{order.order_status | orderStatus}} ] </span>
                     <span class="btn btn-primary btn-xs pull-right" ng-click="finishOrder(order.id)" ng-show="type == 'ON_THE_WAY'">完成订单</span>
                     <span class="btn btn-primary btn-xs pull-right" ng-click="getOrder(order.id)" ng-show="type == 'DELIVERED'">商家取货</span>
                 </h4>

@@ -52,7 +52,7 @@ public class Order extends Auditing<User, Long> implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "merchant_id", nullable = false)
-	private Merchant merchant;
+	private Shop shop;
 
 	@Column(name = "status", nullable = false)
 	private String status;
@@ -131,12 +131,12 @@ public class Order extends Auditing<User, Long> implements Serializable {
 		this.contact = contact;
 	}
 
-	public Merchant getMerchant() {
-		return merchant;
+	public Shop getShop() {
+		return shop;
 	}
 
-	public void setMerchant(Merchant merchant) {
-		this.merchant = merchant;
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
 
 	public String getStatus() {

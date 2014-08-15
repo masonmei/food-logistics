@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "fl_merchant")
-public class Merchant extends Auditing<User, Long> implements Serializable {
+public class Shop extends Auditing<User, Long> implements Serializable {
 
 	private static final long serialVersionUID = 8324229518917746781L;
 
@@ -43,6 +43,19 @@ public class Merchant extends Auditing<User, Long> implements Serializable {
 	@Column(name = "delivery_time")
 	private Integer deliveryTime;
 
+    @Column(name = "star_count")
+    private BigDecimal starCount;
+    @Column(name = "comment_count")
+    private Integer commentCount;
+    @Column(name = "min_consume")
+    private Integer minConsume;
+    @Column(name = "serve_time")
+    private String serveTime;
+    @Column(name = "match_num")
+    private Integer matchNumber;
+    @Column(name = "vip")
+    private boolean vip;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -51,15 +64,15 @@ public class Merchant extends Auditing<User, Long> implements Serializable {
 	private Set<Comment> comments = new HashSet<>();
 
 	@OneToMany(mappedBy = "merchant")
-	private Set<Product> products = new HashSet<>();
+	private Set<Item> items = new HashSet<>();
 
 	@OneToMany(mappedBy = "merchant")
 	private Set<Order> orders = new HashSet<>();
 
-	public Merchant() {
+	public Shop() {
 	}
 
-	public Merchant(Long id) {
+	public Shop(Long id) {
 		setId(id);
 	}
 
@@ -134,39 +147,39 @@ public class Merchant extends Auditing<User, Long> implements Serializable {
 
 	public Comment addCommentMerchant(Comment comment) {
 		getComments().add(comment);
-		comment.setMerchant(this);
+		comment.setShop(this);
 
 		return comment;
 	}
 
 	public Comment removeCommentMerchant(Comment comment) {
 		getComments().remove(comment);
-		comment.setMerchant(null);
+		comment.setShop(null);
 
 		return comment;
 	}
 
 	// bi-directional many-to-one association to MerchantProduct
-	public Set<Product> getProducts() {
-		return this.products;
+	public Set<Item> getItems() {
+		return this.items;
 	}
 
-	public void setProducts(Set<Product> products) {
-		this.products = products;
+	public void setItems(Set<Item> items) {
+		this.items = items;
 	}
 
-	public Product addMerchantProduct(Product product) {
-		getProducts().add(product);
-		product.setMerchant(this);
+	public Item addMerchantProduct(Item item) {
+		getItems().add(item);
+		item.setShop(this);
 
-		return product;
+		return item;
 	}
 
-	public Product removeMerchantProduct(Product product) {
-		getProducts().remove(product);
-		product.setMerchant(null);
+	public Item removeMerchantProduct(Item item) {
+		getItems().remove(item);
+		item.setShop(null);
 
-		return product;
+		return item;
 	}
 
 	public Set<Order> getOrders() {
@@ -179,14 +192,14 @@ public class Merchant extends Auditing<User, Long> implements Serializable {
 
 	public Order addOrder(Order order) {
 		getOrders().add(order);
-		order.setMerchant(this);
+		order.setShop(this);
 
 		return order;
 	}
 
 	public Order removeOrder(Order order) {
 		getOrders().remove(order);
-		order.setMerchant(null);
+		order.setShop(null);
 
 		return order;
 	}
@@ -198,4 +211,52 @@ public class Merchant extends Auditing<User, Long> implements Serializable {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+    public BigDecimal getStarCount() {
+        return starCount;
+    }
+
+    public void setStarCount(BigDecimal starCount) {
+        this.starCount = starCount;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public Integer getMinConsume() {
+        return minConsume;
+    }
+
+    public void setMinConsume(Integer minConsume) {
+        this.minConsume = minConsume;
+    }
+
+    public String getServeTime() {
+        return serveTime;
+    }
+
+    public void setServeTime(String serveTime) {
+        this.serveTime = serveTime;
+    }
+
+    public Integer getMatchNumber() {
+        return matchNumber;
+    }
+
+    public void setMatchNumber(Integer matchNumber) {
+        this.matchNumber = matchNumber;
+    }
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
+    }
 }

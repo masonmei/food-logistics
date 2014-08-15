@@ -42,6 +42,7 @@ public class PoOrder {
 
     @JsonProperty("purchase_items")
     private List<PoPurchaseItem> poPurchaseItems;
+    @JsonProperty("cavalier")
     private PoUser poCavalier;
 
     public void setId(Long id) {

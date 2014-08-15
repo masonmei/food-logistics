@@ -29,7 +29,7 @@ public class Comment extends Auditing<User, Long> implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "merchant_id", nullable = false)
-	private Merchant merchant;
+	private Shop shop;
 
 	public Comment() {
 	}
@@ -55,12 +55,12 @@ public class Comment extends Auditing<User, Long> implements Serializable {
 	}
 
 	// bi-directional many-to-one association to Merchant
-	public Merchant getMerchant() {
-		return this.merchant;
+	public Shop getShop() {
+		return this.shop;
 	}
 
-	public void setMerchant(Merchant merchant) {
-		this.merchant = merchant;
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
 
 }

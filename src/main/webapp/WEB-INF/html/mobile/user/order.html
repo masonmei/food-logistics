@@ -110,7 +110,7 @@
                             <a class="small" toggle target="collapse{{order.id}}">
                                 订单号:{{order.order_number}}
                             </a>
-                            <span class="small pull-right">订单状态: {{order.order_status}}</span>
+                            <span class="small pull-right">订单状态: {{order.order_status | orderStatus}}</span>
                         </div>
                         <div id="collapse{{order.id}}" toggleable active-class="in" exclusion-group="accordion1"
                              class="panel-collapse collapse">

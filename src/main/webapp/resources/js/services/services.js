@@ -232,10 +232,10 @@ AngularSpringApp.factory('UserService', ['$http', function($http){
             return $http.get('/user/cavalier');
         },
         addRole: function(id, rid){
-            return $http.get('/group/' + id + '/role/' + rid);
+            return $http.get('/user/' + id + '/role/' + rid);
         },
         removeRole: function(id, rid){
-            return $http.delete('/group/' + id + '/role/' + rid);
+            return $http.delete('/user/' + id + '/role/' + rid);
         }
     };
 }]);
@@ -506,6 +506,7 @@ AngularSpringApp.factory('AuthenticationSharedService', ['$rootScope', '$http', 
         return {
             login: function (param) {
                 var data ="username=" + param.username +"&password=" + param.password +"&_spring_security_remember_me=" + param.rememberMe +"&submit=Login";
+                alert(data);
                 $http.post('/user/login', data, {
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"

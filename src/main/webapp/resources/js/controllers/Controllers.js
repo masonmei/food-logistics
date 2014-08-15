@@ -605,6 +605,8 @@ AngularSpringApp.controller('CDeliveryController', ['$scope', 'OrderService',
                     } else if (status = 204){
                         $scope.results = [];
                         $scope.noQueryResult = true;
+                    } else {
+                        $scope.results = [];
                     }
                 }
             );
@@ -1032,12 +1034,10 @@ AngularSpringApp.controller('AOrderController', ['$scope', 'OrderService', 'User
         };
 
         $scope.confirmAssign = function(id){
-            alert($scope.cavalier_user_id);
-            alert(JSON.stringify($scope.cavaliers));
             if($scope.cavalier_user_id == null){
                 alert("请先选择骑士！");
             } else {
-                OrderService.patch(id, {cavalier:{id: $scope.cavalier_user_id}}).success(
+                OrderService.patch(id, {cavalier:{id: $scope.cavalier_user_id}, order_status: 'DELIVERED'}).success(
                     function(data, status, headers, config){
                         $scope.refresh();
                         $scope.cavalier_user_id = null;
@@ -1110,10 +1110,13 @@ AngularSpringApp.controller('AOrderQueryController', ['$scope', 'OrderService', 
 
         $scope.queryMerchantOrder = function(id){
             var query = $scope.buildQuery();
+            alert(123);
             OrderService.queryMerchantOrder(id, query).success(
                 function(data, status, headers, config){
                     if(status == 200){
                         $scope.results = data;
+                    } else {
+                        $scope.results = [];
                     }
                 }
             )
@@ -1124,16 +1127,21 @@ AngularSpringApp.controller('AOrderQueryController', ['$scope', 'OrderService', 
                 function(data, status, headers, config){
                     if(status == 200){
                         $scope.results = data;
+                    } else {
+                        $scope.results = [];
                     }
                 }
             )
         };
         $scope.queryCavalierOrder = function(id){
             var query = $scope.buildQuery();
+            alert(query);
             OrderService.queryCavalierOrder(id, query).success(
                 function(data, status, headers, config){
                     if(status == 200){
                         $scope.results = data;
+                    } else {
+                        $scope.results = [];
                     }
                 }
             )
@@ -1144,12 +1152,12 @@ AngularSpringApp.controller('AOrderQueryController', ['$scope', 'OrderService', 
         };
 
         $scope.query = function(){
+
             if($scope.type == 'C'){
                 $scope.queryCavalierOrder($scope.queryId);
             } else if($scope.type == 'U'){
                 $scope.queryUserOrder($scope.queryId);
-            }
-            else if($scope.type == 'M'){
+            } else if($scope.type == 'M'){
                 $scope.queryMerchantOrder($scope.queryId);
             } else {
                 $scope.queryCavalierOrder($scope.queryId);
@@ -1285,7 +1293,7 @@ AngularSpringApp.controller('AUserController', ['$scope', 'RoleService', 'GroupS
             );
         };
         $scope.removeRoleFromUser = function (id, rid) {
-            UserService.remove(id, rid).success(
+            UserService.removeRole(id, rid).success(
                 function(data, status, headers, config){
                     if(status == 200) {
                         $scope.findById(id);

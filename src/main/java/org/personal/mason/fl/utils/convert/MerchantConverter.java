@@ -1,6 +1,6 @@
 package org.personal.mason.fl.utils.convert;
 
-import org.personal.mason.fl.domain.model.Merchant;
+import org.personal.mason.fl.domain.model.Shop;
 import org.personal.mason.fl.web.pojo.PoMerchant;
 
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class MerchantConverter {
 
-    public static PoMerchant fromModel(Merchant model){
+    public static PoMerchant fromModel(Shop model){
         return fromModel(model, ConvertType.FULL);
     }
 
-    public static PoMerchant fromModel(Merchant model, ConvertType convertType) {
+    public static PoMerchant fromModel(Shop model, ConvertType convertType) {
         PoMerchant poMerchant = null;
 
         if (model != null) {
@@ -42,14 +42,14 @@ public class MerchantConverter {
         return poMerchant;
     }
 
-    public static List<PoMerchant> fromModel(List<Merchant> models){
+    public static List<PoMerchant> fromModel(List<Shop> models){
         return fromModel(models, ConvertType.FULL);
     }
 
-    public static List<PoMerchant> fromModel(List<Merchant> models, ConvertType convertType) {
+    public static List<PoMerchant> fromModel(List<Shop> models, ConvertType convertType) {
         List<PoMerchant> poMerchants = new ArrayList<>();
         if (models != null) {
-            for (Merchant model : models) {
+            for (Shop model : models) {
                 PoMerchant poMerchant = fromModel(model, convertType);
 
                 if (poMerchant != null) {
@@ -60,15 +60,15 @@ public class MerchantConverter {
         return poMerchants;
     }
 
-    public static Merchant toModel(PoMerchant poMerchant){
+    public static Shop toModel(PoMerchant poMerchant){
         return toModel(poMerchant, ConvertType.FULL);
     }
 
-    public static Merchant toModel(PoMerchant poMerchant, ConvertType convertType) {
-        Merchant model = null;
+    public static Shop toModel(PoMerchant poMerchant, ConvertType convertType) {
+        Shop model = null;
 
         if (poMerchant != null) {
-            model = new Merchant(poMerchant.getId());
+            model = new Shop(poMerchant.getId());
 
             if(convertType.getPriority() >= ConvertType.FLAT.getPriority()){
                 model.setLocation(poMerchant.getLocation());
@@ -89,15 +89,15 @@ public class MerchantConverter {
         return model;
     }
 
-    public static List<Merchant> toModel(List<PoMerchant> poMerchants){
+    public static List<Shop> toModel(List<PoMerchant> poMerchants){
         return toModel(poMerchants, ConvertType.FULL);
     }
 
-    public static List<Merchant> toModel(List<PoMerchant> poMerchants, ConvertType convertType) {
-        List<Merchant> models = new ArrayList<>();
+    public static List<Shop> toModel(List<PoMerchant> poMerchants, ConvertType convertType) {
+        List<Shop> models = new ArrayList<>();
         if (poMerchants != null) {
             for (PoMerchant poMerchant : poMerchants) {
-                Merchant model = toModel(poMerchant, convertType);
+                Shop model = toModel(poMerchant, convertType);
                 if (model != null) {
                     models.add(model);
                 }

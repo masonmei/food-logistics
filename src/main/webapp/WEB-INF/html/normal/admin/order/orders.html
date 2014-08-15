@@ -39,7 +39,7 @@
         <accordion close-others="true" ng-hide="showAssign">
             <accordion-group ng-repeat="order in results">
                 <accordion-heading class="success">
-                    订单号:{{order.order_number}}<span class="small"> [ 订单状态: {{order.order_status}} ]</span>
+                    订单号:{{order.order_number}}<span class="small"> [ 订单状态: {{order.order_status | orderStatus}} ]</span>
                     <button ng-click="assignDelivery(order)" class="btn btn-primary btn-xs pull-right" ng-hide="type == 'ORDERED'">分派任务</button>
                 </accordion-heading>
                 <div class="well well-sm" ng-if="type == 'ORDERED'">

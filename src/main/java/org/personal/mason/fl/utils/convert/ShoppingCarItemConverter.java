@@ -26,7 +26,7 @@ public class ShoppingCarItemConverter {
             }
             if(convertType.getPriority() >= ConvertType.FULL.getPriority()) {
                 poShoppingCarItem.setPoProduct(
-                    ProductConverter.fromModel(model.getProduct(), ConvertType.FLAT)
+                    ProductConverter.fromModel(model.getItem(), ConvertType.FLAT)
                 );
                 poShoppingCarItem.setShoppingCar(
                     ShoppingCarConverter.fromModel(model.getShoppingCar(), ConvertType.KEY_ONLY)
@@ -73,8 +73,8 @@ public class ShoppingCarItemConverter {
                 model.setShoppingCar(
                         ShoppingCarConverter.toModel(poShoppingCarItem.getShoppingCar(), ConvertType.KEY_ONLY)
                 );
-                model.setProduct(
-                    ProductConverter.toModel(poShoppingCarItem.getPoProduct(), ConvertType.KEY_ONLY)
+                model.setItem(
+                        ProductConverter.toModel(poShoppingCarItem.getPoProduct(), ConvertType.KEY_ONLY)
                 );
             }
         }

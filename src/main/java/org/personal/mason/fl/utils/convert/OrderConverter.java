@@ -45,7 +45,7 @@ public class OrderConverter {
                         ContactConverter.fromModel(model.getContact(), ConvertType.FLAT)
                 );
                 poOrder.setPoMerchant(
-                        MerchantConverter.fromModel(model.getMerchant(), ConvertType.FLAT)
+                        MerchantConverter.fromModel(model.getShop(), ConvertType.FLAT)
                 );
 
                 poOrder.setPoPurchaseItems(
@@ -103,8 +103,8 @@ public class OrderConverter {
                 model.setContact(
                     ContactConverter.toModel(poOrder.getPoContact(), ConvertType.KEY_ONLY)
                 );
-                model.setMerchant(
-                    MerchantConverter.toModel(poOrder.getPoMerchant(), ConvertType.KEY_ONLY)
+                model.setShop(
+                        MerchantConverter.toModel(poOrder.getPoMerchant(), ConvertType.KEY_ONLY)
                 );
 
                 model.setPurchaseItems(

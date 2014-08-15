@@ -26,7 +26,7 @@ public class PurchaseItemConverter {
             }
             if(convertType.getPriority() >= ConvertType.FULL.getPriority()) {
                 poPurchaseItem.setPoProduct(
-                    ProductConverter.fromModel(model.getProduct(), ConvertType.FLAT)
+                    ProductConverter.fromModel(model.getItem(), ConvertType.FLAT)
                 );
 
                 poPurchaseItem.setOrder(
@@ -74,8 +74,8 @@ public class PurchaseItemConverter {
                 model.setOrder(
                         OrderConverter.toModel(poPurchaseItem.getOrder(), ConvertType.KEY_ONLY)
                 );
-                model.setProduct(
-                    ProductConverter.toModel(poPurchaseItem.getPoProduct(), ConvertType.KEY_ONLY)
+                model.setItem(
+                        ProductConverter.toModel(poPurchaseItem.getPoProduct(), ConvertType.KEY_ONLY)
                 );
             }
         }

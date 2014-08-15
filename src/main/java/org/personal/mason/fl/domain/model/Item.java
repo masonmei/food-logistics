@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "fl_product")
-public class Product extends Auditing<User, Long> implements Serializable {
+public class Item extends Auditing<User, Long> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(nullable = false)
@@ -32,17 +32,20 @@ public class Product extends Auditing<User, Long> implements Serializable {
 	@Column(name = "price", nullable = false, precision = 10, scale = 2)
 	private BigDecimal price;
 
+    @Column(name = "sell_count")
+    private Integer sellCount = 0;
+
 	@ManyToOne
 	@JoinColumn(name = "merchant_id", nullable = false)
-	private Merchant merchant;
+	private Shop shop;
 
 	@OneToMany(mappedBy = "product")
 	private Set<ShoppingCarItem> orders = new HashSet<>();
 
-	public Product() {
+	public Item() {
 	}
 
-	public Product(Long id) {
+	public Item(Long id) {
 		setId(id);
 	}
 
@@ -79,12 +82,27 @@ public class Product extends Auditing<User, Long> implements Serializable {
 	}
 
 	// bi-directional many-to-one association to Merchant
-	public Merchant getMerchant() {
-		return this.merchant;
+	public Shop getShop() {
+		return this.shop;
 	}
 
-	public void setMerchant(Merchant merchant) {
-		this.merchant = merchant;
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
 
+    public Integer getSellCount() {
+        return sellCount;
+    }
+
+    public void setSellCount(Integer sellCount) {
+        this.sellCount = sellCount;
+    }
+
+    public Set<ShoppingCarItem> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<ShoppingCarItem> orders) {
+        this.orders = orders;
+    }
 }

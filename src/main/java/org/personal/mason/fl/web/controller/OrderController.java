@@ -3,7 +3,6 @@ package org.personal.mason.fl.web.controller;
 import org.personal.mason.fl.domain.model.*;
 import org.personal.mason.fl.domain.repository.*;
 import org.personal.mason.fl.utils.Constrains;
-import org.personal.mason.fl.utils.DateUtils;
 import org.personal.mason.fl.utils.UserNumberUtils;
 import org.personal.mason.fl.utils.convert.ContactConverter;
 import org.personal.mason.fl.utils.convert.OrderConverter;
@@ -52,7 +51,7 @@ public class OrderController extends AbstractController {
     private ContactRepository contactRepository;
 
     @Autowired
-    private MerchantRepository merchantRepository;
+    private ShopRepository shopRepository;
 
     @Autowired
     private PurchaseItemRepository purchaseItemRepository;
@@ -104,35 +103,35 @@ public class OrderController extends AbstractController {
 
             Set<ShoppingCarItem> shoppingCarItems = user.getShoppingCar().getShoppingCarItems();
 
-            Map<Merchant, List<ShoppingCarItem>> maps = new HashMap<>();
+            Map<Shop, List<ShoppingCarItem>> maps = new HashMap<>();
             for (ShoppingCarItem item : shoppingCarItems){
-                Merchant merchant = item.getProduct().getMerchant();
-                if(!maps.containsKey(merchant)){
-                    maps.put(merchant, new ArrayList<>());
+                Shop shop = item.getItem().getShop();
+                if(!maps.containsKey(shop)){
+                    maps.put(shop, new ArrayList<>());
                 }
-                maps.get(merchant).add(item);
+                maps.get(shop).add(item);
             }
 
             long count = orderRepository.count();
             List<Order> orders = new ArrayList<>();
-            for(Merchant merchant : maps.keySet()){
+            for(Shop shop : maps.keySet()){
                 Order order = new Order();
-                List<ShoppingCarItem> carItems = maps.get(merchant);
+                List<ShoppingCarItem> carItems = maps.get(shop);
                 BigDecimal total = new BigDecimal(0);
                 for (ShoppingCarItem carItem : carItems){
                     PurchaseItem purchaseItem = new PurchaseItem();
-                    purchaseItem.setProduct(carItem.getProduct());
+                    purchaseItem.setItem(carItem.getItem());
                     purchaseItem.setPurchaseNumber(carItem.getNumber());
                     order.addPurchaseItem(purchaseItem);
-                    total = total.add(carItem.getProduct().getPrice().multiply(new BigDecimal(carItem.getNumber())));
+                    total = total.add(carItem.getItem().getPrice().multiply(new BigDecimal(carItem.getNumber())));
                 }
                 order.setStatus(Constrains.ORDER_STATUS[0]);
                 order.setUser(user);
                 order.setContact(contact);
-                order.setMerchant(merchant);
+                order.setShop(shop);
                 order.setSubmitTime(new Date());
                 order.setOrderNumber(UserNumberUtils.createNumber("NUM_", ++count));
-                order.setDeliveryFee(merchant.getDeliveryFee());
+                order.setDeliveryFee(shop.getDeliveryFee());
                 order.setTotal(total);
                 order.setMeetTime(poCheckout.getMeetTime());
                 order.setAdditionInfo(poCheckout.getAdditionInfo());
@@ -326,7 +325,7 @@ public class OrderController extends AbstractController {
                                                              @RequestParam(required = false) Date from,
                                                              @RequestParam(required = false) Date to) {
         try {
-            Merchant merchant = merchantRepository.findOne(id);
+            Shop shop = shopRepository.findOne(id);
 
             List<Order> models = new ArrayList<>();
 
@@ -334,18 +333,18 @@ public class OrderController extends AbstractController {
             to = toEndOfDay(to);
 
             if (status == null) {
-                models = orderRepository.findByMerchantAndSubmitTimeBetween(merchant, from, to);
+                models = orderRepository.findByMerchantAndSubmitTimeBetween(shop, from, to);
             } else {
                 Collection statusCollect = splitToArray(status);
                 if (from == null && to == null) {
 //                    models = orderRepository.findByStatusAndMerchant(status, merchant);
-                    models = orderRepository.findByMerchantAndStatusIn(merchant, statusCollect);
+                    models = orderRepository.findByMerchantAndStatusIn(shop, statusCollect);
                 } else if (to == null) {
 //                    models = orderRepository.findByStatusAndMerchantAndSubmitTimeAfter(status, merchant, from);
-                    models = orderRepository.findByStatusInAndMerchantAndSubmitTimeAfter(statusCollect, merchant, from);
+                    models = orderRepository.findByStatusInAndMerchantAndSubmitTimeAfter(statusCollect, shop, from);
                 } else {
 //                    models = orderRepository.findByStatusAndMerchantAndSubmitTimeBetween(status, merchant, from, to);
-                    models = orderRepository.findByStatusInAndMerchantAndSubmitTimeBetween(statusCollect, merchant, from, to);
+                    models = orderRepository.findByStatusInAndMerchantAndSubmitTimeBetween(statusCollect, shop, from, to);
                 }
 
             }

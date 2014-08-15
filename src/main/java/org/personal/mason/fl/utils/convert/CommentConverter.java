@@ -28,7 +28,7 @@ public class CommentConverter {
             }
             if(convertType.getPriority() >= ConvertType.FULL.getPriority()){
                 poComment.setPoMerchant(
-                    MerchantConverter.fromModel(model.getMerchant(), ConvertType.KEY_ONLY)
+                    MerchantConverter.fromModel(model.getShop(), ConvertType.KEY_ONLY)
                 );
             }
         }
@@ -68,8 +68,8 @@ public class CommentConverter {
                 model.setPoster(poComment.getPoster());
             }
             if(convertType.getPriority() >= ConvertType.FULL.getPriority()) {
-                model.setMerchant(
-                    MerchantConverter.toModel(poComment.getPoMerchant(), ConvertType.KEY_ONLY)
+                model.setShop(
+                        MerchantConverter.toModel(poComment.getPoMerchant(), ConvertType.KEY_ONLY)
                 );
             }
         }

@@ -22,9 +22,9 @@ public class PurchaseItem extends Auditing<User, Long> implements
 	@JoinColumn(name = "order_id", referencedColumnName = "id")
 	private Order order;
 
-	@ManyToOne(targetEntity = Product.class)
+	@ManyToOne(targetEntity = Item.class)
 	@JoinColumn(name = "product_id", referencedColumnName = "id")
-	private Product product;
+	private Item item;
 
 	@Column(name = "purchase_number")
 	private Integer purchaseNumber;
@@ -44,12 +44,12 @@ public class PurchaseItem extends Auditing<User, Long> implements
 		this.order = order;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Item getItem() {
+		return item;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 
 	public Integer getPurchaseNumber() {

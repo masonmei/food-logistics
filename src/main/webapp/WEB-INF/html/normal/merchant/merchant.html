@@ -34,7 +34,7 @@
 <div class="container">
     <tabset>
         <tab heading="菜品">
-            <div class="col-lg-6 col-md-6 prod-item" ng-repeat="item in products | orderBy:predicate">
+            <div class="list-group-item media" ng-repeat="item in products | orderBy:predicate">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-if="isAuthorized('MERCHANT','ADMIN')" ng-click="removeProduct(item.id)">&times;</button>
 
                 <img class="img-thumbnail prod-item-img pull-left " src="{{item.logo}}" ng-show="item.logo"/>
@@ -53,50 +53,23 @@
             </div>
         </tab>
         <tab heading="评论">
-            <div ng-repeat="item in comments | orderBy:predicate">
-                <div>
-                    <span>ABC</span><span>在</span><span>2014/05/40 15:30</span><span>进行评论</span>
-                </div>
-                <p>我们创建了一个指令，它的核心目的是简单地向books列表中添加一本书籍，books已经注册在了我们的Book服务中。我们来把这</p>
+            <div class="list-group">
+                <div ng-repeat="item in comments | orderBy:predicate">
+
+                    <div ng-repeat="item in comments | orderBy:predicate" class="list-group-item media">
+                        <div class="media-body">
+                            <h3 class="media-heading">{{item.name}}
+
+                            </h3>
+                            <p>{{item.content}}</p>
+                        </div>
+                    </div>
+
+                <!--<div>-->
+                    <!--<span>ABC</span><span>在</span><span>2014/05/40 15:30</span><span>进行评论</span>-->
+                <!--</div>-->
+                <!--<p>我们创建了一个指令，它的核心目的是简单地向books列表中添加一本书籍，books已经注册在了我们的Book服务中。我们来把这</p>-->
             </div>
-            <div class="col-lg-6 col-md-6">
-            <form method="post" role="form" class="form-horizontal">
-                <fieldset>
-                    <legend>评论:</legend>
-                    <div class="form-group">
-                        <input class="form-control" name="blogId" type="hidden">
-                        <input class="form-control"
-                                name="blogSectionId" type="hidden" value="">
-                        <input class="form-control" name="commentId"  type="hidden"  >
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-2 col-md-2 control-label"><span>Name</span>(*)</label>
-
-                        <div class="col-lg-10 col-md-10">
-                            <input class="form-control" name="author" type="text" placeholder="Author" autofocus required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-2 col-md-2 control-label"><span>Email</span>(*)</label>
-
-                        <div class="col-lg-10 col-md-10">
-                            <input class="form-control" name="email" type="text" placeholder="Email" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-lg-2 col-md-2 control-label">Content</label>
-
-                        <div class="col-lg-10 col-md-10">
-                            <textarea class="form-control" name="commentContent" placeholder="Comment Content" rows="10"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-lg-offset-2 col-md-offset-2 col-lg-10  col-md-10">
-                            <input type="submit" class="btn btn-primary" value="Comment">
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
             </div>
         </tab>
         <tab heading="简介">

@@ -103,7 +103,9 @@
                                 <tbody>
                                 <tr ng-repeat="citem in contacts">
                                     <td>
-                                        <input type="checkbox" ng-click="setContact(citem)">
+                                        <switch ng-model="selectedContact" ng-click="setContact(citem)">
+                                        </switch>
+                                        <!--<input type="checkbox" >-->
                                     </td>
                                     <td>{{citem.receipt}}</td>
                                     <td>{{citem.address}}</td>

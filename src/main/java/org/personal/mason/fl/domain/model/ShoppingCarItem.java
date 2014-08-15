@@ -28,7 +28,7 @@ public class ShoppingCarItem extends Auditing<User, Long> implements
 
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+	private Item item;
 
 	@Column(name = "number")
 	private Integer number;
@@ -48,12 +48,12 @@ public class ShoppingCarItem extends Auditing<User, Long> implements
 		this.shoppingCar = shoppingCar;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Item getItem() {
+		return item;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 
 	public Integer getNumber() {

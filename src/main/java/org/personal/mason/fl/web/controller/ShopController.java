@@ -1,10 +1,10 @@
 package org.personal.mason.fl.web.controller;
 
-import org.personal.mason.fl.domain.model.Merchant;
-import org.personal.mason.fl.domain.model.Product;
+import org.personal.mason.fl.domain.model.Item;
+import org.personal.mason.fl.domain.model.Shop;
 import org.personal.mason.fl.domain.model.User;
-import org.personal.mason.fl.domain.repository.MerchantRepository;
-import org.personal.mason.fl.domain.repository.ProductRepository;
+import org.personal.mason.fl.domain.repository.ShopRepository;
+import org.personal.mason.fl.domain.repository.ItemRepository;
 import org.personal.mason.fl.utils.convert.CommentConverter;
 import org.personal.mason.fl.utils.convert.MerchantConverter;
 import org.personal.mason.fl.utils.convert.ProductConverter;
@@ -30,21 +30,21 @@ import java.util.List;
  * Created by mason on 6/23/14.
  */
 @Controller
-public class MerchantController extends AbstractController {
+public class ShopController extends AbstractController {
 
     @Autowired
-    private MerchantRepository merchantRepository;
+    private ShopRepository shopRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ItemRepository itemRepository;
 
     @RequestMapping(method = RequestMethod.GET,
             value = {"merchant"}
     )
     public ResponseEntity<List<PoMerchant>> findAll() {
-        List<Merchant> merchants = merchantRepository.findAll();
+        List<Shop> shops = shopRepository.findAll();
 
-        List<PoMerchant> poMerchants = MerchantConverter.fromModel(merchants);
+        List<PoMerchant> poMerchants = MerchantConverter.fromModel(shops);
         if (poMerchants.isEmpty()) {
             return new ResponseEntity<List<PoMerchant>>(HttpStatus.NO_CONTENT);
         } else {
@@ -57,9 +57,9 @@ public class MerchantController extends AbstractController {
     )
     public ResponseEntity<List<PoMerchant>> findAllMerchantRestaurant() {
         User loginUser = getLoginUser();
-        List<Merchant> merchants = merchantRepository.findByUser(loginUser);
+        List<Shop> shops = shopRepository.findByUser(loginUser);
 
-        List<PoMerchant> poMerchants = MerchantConverter.fromModel(merchants);
+        List<PoMerchant> poMerchants = MerchantConverter.fromModel(shops);
         if (poMerchants.isEmpty()) {
             return new ResponseEntity<List<PoMerchant>>(HttpStatus.NO_CONTENT);
         } else {
@@ -71,7 +71,7 @@ public class MerchantController extends AbstractController {
             value = {"merchant/{id}"}
     )
     public ResponseEntity<PoMerchant> findById(@PathVariable Long id) {
-        PoMerchant poMerchant = MerchantConverter.fromModel(merchantRepository.findOne(id));
+        PoMerchant poMerchant = MerchantConverter.fromModel(shopRepository.findOne(id));
         if (poMerchant == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
@@ -85,7 +85,7 @@ public class MerchantController extends AbstractController {
     )
     public ResponseEntity<PoMerchant> createRole(@RequestBody PoMerchant poMerchant, UriComponentsBuilder builder) {
 
-        PoMerchant result = MerchantConverter.fromModel(merchantRepository.save(MerchantConverter.toModel(poMerchant)));
+        PoMerchant result = MerchantConverter.fromModel(shopRepository.save(MerchantConverter.toModel(poMerchant)));
 
         HttpHeaders headers = new HttpHeaders();
         if (result != null) {
@@ -101,10 +101,10 @@ public class MerchantController extends AbstractController {
             value = {"merchant/{id}"}
     )
     public ResponseEntity<PoMerchant> updateMerchant(@PathVariable Long id, @RequestBody PoMerchant poMerchant, UriComponentsBuilder builder) {
-        Merchant merchant = MerchantConverter.toModel(poMerchant);
-        Merchant model = merchantRepository.findOne(id);
-        updateModel(model, merchant);
-        Merchant result = merchantRepository.saveAndFlush(model);
+        Shop shop = MerchantConverter.toModel(poMerchant);
+        Shop model = shopRepository.findOne(id);
+        updateModel(model, shop);
+        Shop result = shopRepository.saveAndFlush(model);
 
         HttpHeaders headers = new HttpHeaders();
         if (result != null) {
@@ -120,10 +120,10 @@ public class MerchantController extends AbstractController {
             value = {"merchant/{id}"}
     )
     public ResponseEntity partialUpdateMerchant(@PathVariable Long id, @RequestBody PoMerchant poMerchant, UriComponentsBuilder builder) {
-        Merchant merchant = MerchantConverter.toModel(poMerchant);
-        Merchant model = merchantRepository.findOne(id);
-        mergeModel(model, merchant);
-        Merchant result = merchantRepository.saveAndFlush(model);
+        Shop shop = MerchantConverter.toModel(poMerchant);
+        Shop model = shopRepository.findOne(id);
+        mergeModel(model, shop);
+        Shop result = shopRepository.saveAndFlush(model);
 
         HttpHeaders headers = new HttpHeaders();
         if (result != null) {
@@ -140,7 +140,7 @@ public class MerchantController extends AbstractController {
     )
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            merchantRepository.delete(id);
+            shopRepository.delete(id);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -151,7 +151,7 @@ public class MerchantController extends AbstractController {
             value = {"merchant/{id}/product"}
     )
     public ResponseEntity<List<PoProduct>> findProducts(@PathVariable Long id) {
-        List<PoProduct> poProducts = ProductConverter.fromModel(new ArrayList(merchantRepository.findOne(id).getProducts()));
+        List<PoProduct> poProducts = ProductConverter.fromModel(new ArrayList(shopRepository.findOne(id).getItems()));
         if (poProducts == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         } else {
@@ -164,17 +164,17 @@ public class MerchantController extends AbstractController {
             value = {"merchant/{id}/product"}
     )
     public ResponseEntity createProduct(@PathVariable Long id, @RequestBody PoProduct merchantProduct, UriComponentsBuilder builder) {
-        Merchant merchant = merchantRepository.findOne(id);
-        Product product = ProductConverter.toModel(merchantProduct);
-        if(product != null){
-            merchant.addMerchantProduct(product);
+        Shop shop = shopRepository.findOne(id);
+        Item item = ProductConverter.toModel(merchantProduct);
+        if(item != null){
+            shop.addMerchantProduct(item);
 
-            product = productRepository.saveAndFlush(product);
-            merchantRepository.save(merchant);
+            item = itemRepository.saveAndFlush(item);
+            shopRepository.save(shop);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        if (product != null) {
+        if (item != null) {
             headers.setLocation(builder.path("merchant/" + id + "/product").build().toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
         } else {
@@ -188,16 +188,16 @@ public class MerchantController extends AbstractController {
     )
     public ResponseEntity updateProduct(@PathVariable Long id, @PathVariable Long pid, @RequestBody PoProduct merchantProduct, UriComponentsBuilder builder) {
         try{
-            Merchant merchant = merchantRepository.findOne(id);
-            Product model = productRepository.findOne(pid);
-            if(!model.getMerchant().getId().equals(id)){
+            Shop shop = shopRepository.findOne(id);
+            Item model = itemRepository.findOne(pid);
+            if(!model.getShop().getId().equals(id)){
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
 
-            Product product = ProductConverter.toModel(merchantProduct);
-            updateModel(model, product);
-            model.setMerchant(merchant);
-            productRepository.saveAndFlush(model);
+            Item item = ProductConverter.toModel(merchantProduct);
+            updateModel(model, item);
+            model.setShop(shop);
+            itemRepository.saveAndFlush(model);
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(builder.path("merchant/" + id + "/product").build().toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -212,16 +212,16 @@ public class MerchantController extends AbstractController {
     )
     public ResponseEntity<Void> partialUpdateProduct(@PathVariable Long id, @PathVariable Long pid, @RequestBody PoProduct merchantProduct, UriComponentsBuilder builder) {
         try{
-            Merchant merchant = merchantRepository.findOne(id);
-            Product model = productRepository.findOne(pid);
-            if(!model.getMerchant().getId().equals(id)){
+            Shop shop = shopRepository.findOne(id);
+            Item model = itemRepository.findOne(pid);
+            if(!model.getShop().getId().equals(id)){
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
 
-            Product product = ProductConverter.toModel(merchantProduct);
-            mergeModel(model, product);
-            model.setMerchant(merchant);
-            productRepository.saveAndFlush(model);
+            Item item = ProductConverter.toModel(merchantProduct);
+            mergeModel(model, item);
+            model.setShop(shop);
+            itemRepository.saveAndFlush(model);
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(builder.path("merchant/" + id + "/product").build().toUri());
             return new ResponseEntity<>(headers, HttpStatus.CREATED);
@@ -236,12 +236,12 @@ public class MerchantController extends AbstractController {
     )
     public ResponseEntity<Void> createProduct(@PathVariable Long id, @PathVariable Long pid, UriComponentsBuilder builder) {
         try{
-            Merchant merchant = merchantRepository.findOne(id);
-            Product model = productRepository.findOne(pid);
+            Shop shop = shopRepository.findOne(id);
+            Item model = itemRepository.findOne(pid);
 
-            merchant.removeMerchantProduct(model);
-            merchantRepository.saveAndFlush(merchant);
-            productRepository.delete(model);
+            shop.removeMerchantProduct(model);
+            shopRepository.saveAndFlush(shop);
+            itemRepository.delete(model);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(builder.path("merchant/"+ id + "/product").build().toUri());
@@ -258,8 +258,8 @@ public class MerchantController extends AbstractController {
             value = {"merchant/{id}/comment"}
     )
     public ResponseEntity<List<PoComment>> findComments(@PathVariable Long id) {
-        Merchant merchant = merchantRepository.findOne(id);
-        List<PoComment> poComments = CommentConverter.fromModel(new ArrayList(merchant.getComments()));
+        Shop shop = shopRepository.findOne(id);
+        List<PoComment> poComments = CommentConverter.fromModel(new ArrayList(shop.getComments()));
         if (poComments == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

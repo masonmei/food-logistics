@@ -2,7 +2,7 @@ package org.personal.mason.fl.web.controller;
 
 import org.personal.mason.fl.domain.model.ShoppingCar;
 import org.personal.mason.fl.domain.model.ShoppingCarItem;
-import org.personal.mason.fl.domain.repository.ProductRepository;
+import org.personal.mason.fl.domain.repository.ItemRepository;
 import org.personal.mason.fl.domain.repository.ShoppingCarItemRepository;
 import org.personal.mason.fl.domain.repository.ShoppingCarRepository;
 import org.personal.mason.fl.utils.convert.ShoppingCarConverter;
@@ -35,7 +35,7 @@ public class ShoppingCarController extends AbstractController {
     private ShoppingCarItemRepository shoppingCarItemRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ItemRepository itemRepository;
 
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = {"sc"}, method = RequestMethod.GET)
@@ -64,7 +64,7 @@ public class ShoppingCarController extends AbstractController {
                     boolean found = false;
                     ShoppingCarItem founded = null;
                     for (ShoppingCarItem item : shoppingCarItems){
-                        if(item.getProduct().getId().equals(shoppingCarItem.getProduct().getId())){
+                        if(item.getItem().getId().equals(shoppingCarItem.getItem().getId())){
                             found = true;
                             founded = item;
                             break;
@@ -82,7 +82,7 @@ public class ShoppingCarController extends AbstractController {
                     } else {
                         ShoppingCarItem item = new ShoppingCarItem();
                         item.setNumber(shoppingCarItem.getNumber());
-                        item.setProduct(productRepository.findOne(shoppingCarItem.getProduct().getId()));
+                        item.setItem(itemRepository.findOne(shoppingCarItem.getItem().getId()));
                         shoppingCar.addShoppingCarItem(item);
                         shoppingCarItemRepository.save(item);
                         shoppingCar = shoppingCarRepository.saveAndFlush(shoppingCar);

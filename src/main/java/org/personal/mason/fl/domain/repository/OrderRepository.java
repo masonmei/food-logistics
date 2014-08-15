@@ -1,6 +1,6 @@
 package org.personal.mason.fl.domain.repository;
 
-import org.personal.mason.fl.domain.model.Merchant;
+import org.personal.mason.fl.domain.model.Shop;
 import org.personal.mason.fl.domain.model.Order;
 import org.personal.mason.fl.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,9 +23,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	
 	List<Order> findByStatusAndUser(String status, User user);
 	
-	List<Order> findByStatusAndMerchant(String status, Merchant merchant);
+	List<Order> findByStatusAndMerchant(String status, Shop shop);
 
-    List<Order> findByMerchantAndStatusIn(Merchant merchant, Collection<String> status);
+    List<Order> findByMerchantAndStatusIn(Shop shop, Collection<String> status);
 	
 	List<Order> findBySubmitTimeAfter(Date submitTime);
 	
@@ -35,8 +35,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 	List<Order> findByStatusAndUserAndSubmitTimeAfter(String status, User user, Date submitTime);
 	
-	List<Order> findByStatusAndMerchantAndSubmitTimeAfter(String status, Merchant merchant, Date submitTime);
-    List<Order> findByStatusInAndMerchantAndSubmitTimeAfter(Collection<String> status, Merchant merchant, Date submitTime);
+	List<Order> findByStatusAndMerchantAndSubmitTimeAfter(String status, Shop shop, Date submitTime);
+    List<Order> findByStatusInAndMerchantAndSubmitTimeAfter(Collection<String> status, Shop shop, Date submitTime);
 
     List<Order> findBySubmitTimeBetween(Date from, Date to);
 
@@ -44,7 +44,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByUserAndSubmitTimeBetween(User user, Date from, Date to);
 
-    List<Order> findByMerchantAndSubmitTimeBetween(Merchant merchant, Date from, Date to);
+    List<Order> findByMerchantAndSubmitTimeBetween(Shop shop, Date from, Date to);
 
     List<Order> findByStatusAndSubmitTimeBetween(String status, Date from, Date to);
 
@@ -52,8 +52,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByStatusAndUserAndSubmitTimeBetween(String status, User user, Date from, Date to);
 
-    List<Order> findByStatusAndMerchantAndSubmitTimeBetween(String status, Merchant merchant, Date from, Date to);
-    List<Order> findByStatusInAndMerchantAndSubmitTimeBetween(Collection<String> status, Merchant merchant, Date from, Date to);
+    List<Order> findByStatusAndMerchantAndSubmitTimeBetween(String status, Shop shop, Date from, Date to);
+    List<Order> findByStatusInAndMerchantAndSubmitTimeBetween(Collection<String> status, Shop shop, Date from, Date to);
 
     List<Order> findByCavalierIsNull();
 
